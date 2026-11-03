@@ -1,0 +1,21 @@
+services:
+  db:
+    # Postgres 17 with the pgvector extension preinstalled (needed for RAG in milestone 3).
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: simpang
+      POSTGRES_PASSWORD: simpang # local dev only
+      POSTGRES_DB: simpang
+    ports:
+      - "5433:5432" # 5433 on the Mac so it never clashes with another local Postgres
+    volumes:
+      - simpang-db:/var/lib/postgresql/data
+      # Runs only on the very first start: creates a separate simpang_test database for tests.
+      - ./docker/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U simpang"]
+      interval: 2s
+      retries: 15
+
+volumes:
+  simpang-db:
