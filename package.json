@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "db:up": "docker compose up -d --wait db",
     "db:down": "docker compose down",
-    "migrate": "node src/db/migrate-cli.ts"
+    "migrate": "node src/db/migrate-cli.ts",
+    "create-key": "node src/db/create-key-cli.ts"
   },
   "dependencies": {
     "fastify": "^5.12.7",
