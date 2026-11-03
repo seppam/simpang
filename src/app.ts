@@ -2,12 +2,16 @@ import Fastify from 'fastify';
 import { requireApiKey } from './auth/plugin.ts';
 import type { KeyStore } from './auth/keyStore.ts';
 import type { Provider } from './providers/types.ts';
+import type { UsageSink } from './metering/usageSink.ts';
 import { chatRoutes } from './routes/chat.ts';
 
 export type AppDeps = {
   keyStore: KeyStore;
   providers?: Record<string, Provider>; // keyed by the prefix used in "model", e.g. "mock"
+  usageSink?: UsageSink;
 };
+
+const discardUsage: UsageSink = { record: async () => {} };
 
 // buildApp() only builds the app; it does not listen on a port.
 // That split lets tests use app.inject() while server.ts does the real listen().
@@ -31,7 +35,7 @@ export function buildApp(deps: AppDeps) {
     // "Who am I?": lets a client check its key without spending tokens.
     v1.get('/me', async (request) => ({ tenant: request.auth.tenantName }));
 
-    chatRoutes(v1, deps.providers ?? {});
+    chatRoutes(v1, deps.providers ?? {}, deps.usageSink ?? discardUsage);
   }, { prefix: '/v1' });
 
   return app;

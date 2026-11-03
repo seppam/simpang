@@ -1,6 +1,7 @@
 import pg from 'pg';
 import { buildApp } from './app.ts';
 import { PgKeyStore } from './db/pgKeyStore.ts';
+import { PgUsageSink } from './db/pgUsageSink.ts';
 import { MockProvider } from './providers/mock.ts';
 
 const port = Number(process.env.PORT ?? 3000);
@@ -10,6 +11,7 @@ const pool = new pg.Pool({
 const app = buildApp({
   keyStore: new PgKeyStore(pool),
   providers: { mock: new MockProvider() },
+  usageSink: new PgUsageSink(pool),
 });
 
 await app.listen({ port, host: '0.0.0.0' });
