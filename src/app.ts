@@ -9,6 +9,7 @@ export type AppDeps = {
   keyStore: KeyStore;
   providers?: Record<string, Provider>; // keyed by the prefix used in "model", e.g. "mock"
   usageSink?: UsageSink;
+  logger?: boolean; // on in server.ts, off in tests to keep output quiet
 };
 
 const discardUsage: UsageSink = { record: async () => {} };
@@ -17,7 +18,8 @@ const discardUsage: UsageSink = { record: async () => {} };
 // That split lets tests use app.inject() while server.ts does the real listen().
 // Dependencies come in as arguments, so tests can pass fakes instead of a real database.
 export function buildApp(deps: AppDeps) {
-  const app = Fastify({ logger: false });
+  // Never log the Authorization header: it carries the caller's API key.
+  const app = Fastify({ logger: deps.logger ? { redact: ['req.headers.authorization'] } : false });
 
   // Schema validation errors in the OpenAI error shape instead of Fastify's default.
   app.setErrorHandler((err: { validation?: unknown; message: string; statusCode?: number }, _request, reply) => {

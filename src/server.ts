@@ -25,6 +25,7 @@ const app = buildApp({
   keyStore: new PgKeyStore(pool),
   providers,
   usageSink: new PgUsageSink(pool),
+  logger: true,
 });
 
 await app.listen({ port, host: '0.0.0.0' });
