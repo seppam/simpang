@@ -1,0 +1,33 @@
+# Local kind cluster values. Not for production.
+#
+#   docker build -t simpang:dev .
+#   kind load docker-image simpang:dev
+#   helm install dev deploy/helm/simpang -f deploy/helm/simpang/values-kind.yaml
+#
+# The password below is a throwaway value for a local cluster, the same as docker-compose.yml.
+# It is not a secret. Provider keys are not set here: add them with your own
+# `--set secrets.groqApiKey=...` at install time, or leave them out to run with the mock provider.
+
+image:
+  repository: simpang
+  tag: dev
+  pullPolicy: IfNotPresent
+
+postgres:
+  enabled: true
+  password: simpang-local-only
+  persistence:
+    size: 1Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
