@@ -1,6 +1,6 @@
 import { ProviderError } from '../providers/errors.ts';
-import type { ChatMessage, ChatResult, Provider, StreamChunk, Usage } from '../providers/types.ts';
-import type { UsageSink } from '../metering/usageSink.ts';
+import type { ChatMessage, ChatResult, Provider, StreamChunk, ToolSpec, Usage } from '../providers/types.ts';
+import type { UsageEvent, UsageSink } from '../metering/usageSink.ts';
 import { CircuitBreaker } from './breaker.ts';
 import { costUsd, findModel, type Catalog } from './catalog.ts';
 
@@ -11,6 +11,8 @@ export type CallContext = {
   apiKeyId: string;
   signal?: AbortSignal;
   log?: { warn: (obj: object, msg: string) => void; error: (obj: object, msg: string) => void };
+  driver?: string; // "name@version" when the call is made by an agent driver
+  onUsage?: (event: UsageEvent) => void; // lets a driver add up the cost of all its model calls
 };
 
 export type CallInput = {
@@ -18,6 +20,7 @@ export type CallInput = {
   messages: ChatMessage[];
   temperature?: number;
   maxTokens?: number;
+  tools?: ToolSpec[];
 };
 
 // An error already translated to what the HTTP caller should see.
@@ -72,7 +75,7 @@ export class Router {
   }
 
   async complete(ctx: CallContext, input: CallInput): Promise<{ result: ChatResult; used: Candidate; attempts: number }> {
-    const { route, candidates } = this.resolve(input.model);
+    const { route, candidates } = this.withToolSupport(this.resolve(input.model), input);
     const errors: ProviderError[] = [];
     let attempts = 0;
 
@@ -89,7 +92,7 @@ export class Router {
         const err = asProviderError(candidate.provider, thrown);
         await this.meter(ctx, candidate, route, attempts, started, 'error', { promptTokens: 0, completionTokens: 0 }, err.kind);
         this.recordFailure(candidate.provider, err);
-        ctx.log?.warn({ provider: candidate.provider, model: candidate.model, kind: err.kind, status: err.status }, 'provider attempt failed');
+        ctx.log?.warn({ provider: candidate.provider, model: candidate.model, kind: err.kind, status: err.status, detail: err.message.slice(0, 300) }, 'provider attempt failed');
         errors.push(err);
         if (!err.fallbackable) break;
       }
@@ -135,12 +138,22 @@ export class Router {
         const partial = sentAnything ? { promptTokens: 0, completionTokens: Math.ceil(output.length / 4), estimated: true } : { promptTokens: 0, completionTokens: 0 };
         await this.meter(ctx, candidate, route, attempts, started, 'error', partial, err.kind);
         this.recordFailure(candidate.provider, err);
-        ctx.log?.warn({ provider: candidate.provider, model: candidate.model, kind: err.kind }, 'provider stream failed');
+        ctx.log?.warn({ provider: candidate.provider, model: candidate.model, kind: err.kind, detail: err.message.slice(0, 300) }, 'provider stream failed');
         errors.push(err);
         if (sentAnything || !err.fallbackable) break;
       }
     }
     throw toGatewayError(errors, candidates.length, attempts);
+  }
+
+  // A request with tools can only go to adapters that implement native function calling.
+  private withToolSupport(resolved: { route?: string; candidates: Candidate[] }, input: CallInput) {
+    if (!input.tools?.length) return resolved;
+    const candidates = resolved.candidates.filter((c) => this.deps.providers[c.provider].supportsTools);
+    if (!candidates.length) {
+      throw new GatewayError(400, 'invalid_request_error', 'tools_not_supported', `No provider for "${input.model}" supports tool calling.`);
+    }
+    return { ...resolved, candidates };
   }
 
   private recordFailure(provider: string, err: ProviderError) {
@@ -159,23 +172,26 @@ export class Router {
     errorKind?: string,
   ) {
     const entry = findModel(this.deps.catalog, candidate.provider, candidate.model);
+    const event: UsageEvent = {
+      tenantId: ctx.tenantId,
+      apiKeyId: ctx.apiKeyId,
+      provider: candidate.provider,
+      model: candidate.model,
+      route,
+      attempt,
+      promptTokens: usage.promptTokens,
+      completionTokens: usage.completionTokens,
+      estimated: usage.estimated ?? false,
+      costUsd: costUsd(entry, usage.promptTokens, usage.completionTokens),
+      catalogVersion: this.deps.catalog.version,
+      latencyMs: Math.round(performance.now() - started),
+      status,
+      errorKind,
+      driver: ctx.driver,
+    };
+    ctx.onUsage?.(event);
     try {
-      await this.deps.usageSink.record({
-        tenantId: ctx.tenantId,
-        apiKeyId: ctx.apiKeyId,
-        provider: candidate.provider,
-        model: candidate.model,
-        route,
-        attempt,
-        promptTokens: usage.promptTokens,
-        completionTokens: usage.completionTokens,
-        estimated: usage.estimated ?? false,
-        costUsd: costUsd(entry, usage.promptTokens, usage.completionTokens),
-        catalogVersion: this.deps.catalog.version,
-        latencyMs: Math.round(performance.now() - started),
-        status,
-        errorKind,
-      });
+      await this.deps.usageSink.record(event);
     } catch (err) {
       // Trade-off: a metering outage must not take the whole gateway down,
       // so we log loudly and still answer. (A durable outbox would close this gap.)

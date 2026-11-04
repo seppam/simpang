@@ -177,3 +177,29 @@ describe('AnthropicProvider', () => {
     expect(out).toEqual({ text: 'Baik.', usage: { promptTokens: 20, completionTokens: 3 } });
   });
 });
+
+describe('OpenAICompatibleProvider native tool calling', () => {
+  it('sends tools in OpenAI format and maps tool_calls and tool messages both ways', async () => {
+    const { calls, fetchFn } = fakeJson(200, {
+      choices: [{ message: { content: null, tool_calls: [{ id: 'call_1', type: 'function', function: { name: 'search_knowledge', arguments: '{"query":"URSSET"}' } }] } }],
+      usage: { prompt_tokens: 30, completion_tokens: 8 },
+    });
+    const p = new OpenAICompatibleProvider({ name: 'groq', baseUrl: 'https://x/v1', apiKey: 'k', fetchFn });
+
+    const result = await p.chat({
+      model: 'm',
+      messages: [
+        { role: 'user', content: 'q' },
+        { role: 'assistant', content: '', toolCalls: [{ id: 'call_0', name: 'current_date', arguments: {} }] },
+        { role: 'tool', toolCallId: 'call_0', name: 'current_date', content: '2026-11-04' },
+      ],
+      tools: [{ name: 'search_knowledge', description: 'd', parameters: { type: 'object', properties: {} } }],
+    });
+
+    expect(result.toolCalls).toEqual([{ id: 'call_1', name: 'search_knowledge', arguments: { query: 'URSSET' } }]);
+    const body = JSON.parse(String(calls[0].init.body));
+    expect(body.tools[0]).toEqual({ type: 'function', function: { name: 'search_knowledge', description: 'd', parameters: { type: 'object', properties: {} } } });
+    expect(body.messages[1]).toEqual({ role: 'assistant', content: null, tool_calls: [{ id: 'call_0', type: 'function', function: { name: 'current_date', arguments: '{}' } }] });
+    expect(body.messages[2]).toEqual({ role: 'tool', tool_call_id: 'call_0', content: '2026-11-04' });
+  });
+});

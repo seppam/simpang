@@ -1,7 +1,7 @@
 import { errorFromThrown } from './errors.ts';
 import { postJson } from './http.ts';
 import { readSSE } from './sse.ts';
-import { estimateTokens, type ChatRequest, type ChatResult, type Provider, type StreamChunk } from './types.ts';
+import { estimateTokens, type ChatMessage, type ChatRequest, type ChatResult, type Provider, type StreamChunk, type ToolCall } from './types.ts';
 
 type Options = {
   name: string; // the prefix clients use in "model", e.g. "groq"
@@ -12,8 +12,9 @@ type Options = {
 };
 
 type VendorUsage = { prompt_tokens?: number; completion_tokens?: number };
+type VendorToolCall = { id?: string; type?: string; function?: { name?: string; arguments?: string } };
 type VendorResponse = {
-  choices?: { message?: { content?: string | null } }[];
+  choices?: { message?: { content?: string | null; tool_calls?: VendorToolCall[] } }[];
   usage?: VendorUsage;
 };
 type VendorChunk = {
@@ -25,6 +26,7 @@ type VendorChunk = {
 // Groq, OpenRouter, Hugging Face router, Ollama and vLLM differ only in baseUrl and key.
 export class OpenAICompatibleProvider implements Provider {
   readonly name: string;
+  readonly supportsTools = true;
   private baseUrl: string;
   private apiKey?: string;
   private timeoutMs: number;
@@ -45,9 +47,12 @@ export class OpenAICompatibleProvider implements Provider {
       headers: this.apiKey ? { authorization: `Bearer ${this.apiKey}` } : {},
       body: {
         model: request.model,
-        messages: request.messages,
+        messages: request.messages.map(toVendorMessage),
         temperature: request.temperature,
         max_tokens: request.maxTokens,
+        ...(request.tools?.length
+          ? { tools: request.tools.map((t) => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.parameters } })) }
+          : {}),
         ...extra,
       },
       timeoutMs,
@@ -59,12 +64,14 @@ export class OpenAICompatibleProvider implements Provider {
   async chat(request: ChatRequest): Promise<ChatResult> {
     const res = await this.post(request, {}, this.timeoutMs);
     const data = (await res.json()) as VendorResponse;
-    const content = data.choices?.[0]?.message?.content ?? '';
-    if (data.usage) {
-      // The vendor's own counts are what the vendor bills us for.
-      return { content, promptTokens: data.usage.prompt_tokens ?? 0, completionTokens: data.usage.completion_tokens ?? 0 };
-    }
-    return { content, ...estimate(request, content) };
+    const message = data.choices?.[0]?.message;
+    const content = message?.content ?? '';
+    const toolCalls = message?.tool_calls?.length ? message.tool_calls.map(fromVendorToolCall) : undefined;
+    const usage = data.usage
+      ? // The vendor's own counts are what the vendor bills us for.
+        { promptTokens: data.usage.prompt_tokens ?? 0, completionTokens: data.usage.completion_tokens ?? 0 }
+      : estimate(request, content);
+    return { content, ...usage, ...(toolCalls ? { toolCalls } : {}) };
   }
 
   async *stream(request: ChatRequest): AsyncGenerator<StreamChunk> {
@@ -95,6 +102,29 @@ export class OpenAICompatibleProvider implements Provider {
     // Some vendors ignore stream_options: fall back to an estimate, clearly marked.
     if (!usageSent) yield { type: 'usage', usage: estimate(request, text) };
   }
+}
+
+// Our message shape -> OpenAI wire format (tool calls carry their arguments as a JSON string).
+function toVendorMessage(m: ChatMessage) {
+  if (m.role === 'tool') return { role: 'tool', tool_call_id: m.toolCallId, content: m.content };
+  if (m.role === 'assistant' && m.toolCalls?.length) {
+    return {
+      role: 'assistant',
+      content: m.content || null,
+      tool_calls: m.toolCalls.map((c) => ({ id: c.id, type: 'function', function: { name: c.name, arguments: JSON.stringify(c.arguments) } })),
+    };
+  }
+  return { role: m.role, content: m.content };
+}
+
+function fromVendorToolCall(c: VendorToolCall, i: number): ToolCall {
+  let args: Record<string, unknown> = {};
+  try {
+    args = JSON.parse(c.function?.arguments || '{}');
+  } catch {
+    args = { _raw: c.function?.arguments }; // the tool will report bad arguments back to the model
+  }
+  return { id: c.id ?? `call_${i}`, name: c.function?.name ?? '', arguments: args };
 }
 
 function estimate(request: ChatRequest, output: string) {

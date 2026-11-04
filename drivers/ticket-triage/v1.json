@@ -1,0 +1,23 @@
+{
+  "name": "ticket-triage",
+  "version": "v1",
+  "description": "Classifies an application-support ticket (Indonesian) into type, priority and missing information. Baseline prompt.",
+  "model": "simpang/fast",
+  "temperature": 0,
+  "maxTokens": 700,
+  "system": "You triage application-support tickets for an ERP (Accounting, Sales, Inventory, Purchase, Contacts, Employees). Tickets are in Indonesian.\nReturn ONLY a JSON object with:\n- type: one of bug, data, change_impact, request, other\n- priority: one of P1, P2, P3, P4, unknown\n- missing_info: array, any of langkah_reproduksi, contoh_record, pesan_error, waktu_mulai, user_terdampak (empty if the ticket is complete)\n- needs_human: true if the ticket must not be handled automatically\n- reason: one short sentence in Indonesian",
+  "output": {
+    "type": "json",
+    "schema": {
+      "type": "object",
+      "required": ["type", "priority", "missing_info", "needs_human", "reason"],
+      "properties": {
+        "type": { "enum": ["bug", "data", "change_impact", "request", "other"] },
+        "priority": { "enum": ["P1", "P2", "P3", "P4", "unknown"] },
+        "missing_info": { "type": "array", "items": { "enum": ["langkah_reproduksi", "contoh_record", "pesan_error", "waktu_mulai", "user_terdampak"] } },
+        "needs_human": { "type": "boolean" },
+        "reason": { "type": "string" }
+      }
+    }
+  }
+}

@@ -8,6 +8,11 @@ import { loadCatalog, type Catalog } from './gateway/catalog.ts';
 import { Router } from './gateway/router.ts';
 import { CircuitBreaker } from './gateway/breaker.ts';
 import { chatRoutes } from './routes/chat.ts';
+import { driverRoutes } from './routes/drivers.ts';
+import { DriverRegistry } from './drivers/registry.ts';
+import { DriverRuntime } from './drivers/runtime.ts';
+import type { Retriever } from './rag/retriever.ts';
+import { ShadowRunner, type ShadowSink } from './eval/shadow.ts';
 
 export type AppDeps = {
   keyStore: KeyStore;
@@ -16,6 +21,9 @@ export type AppDeps = {
   quota?: QuotaGuard;
   catalog?: Catalog;
   breaker?: CircuitBreaker;
+  retriever?: Retriever;
+  drivers?: DriverRegistry;
+  shadow?: { sink: ShadowSink; sampleRate: number };
   logger?: boolean; // on in server.ts, off in tests to keep output quiet
 };
 
@@ -32,6 +40,12 @@ export function buildApp(deps: AppDeps) {
   const catalog = deps.catalog ?? loadCatalog();
   const router = new Router({ providers, catalog, usageSink: deps.usageSink ?? discardUsage, breaker: deps.breaker });
   app.decorate('router', router);
+  const registry = deps.drivers ?? new DriverRegistry();
+  const runtime = new DriverRuntime({ router, retriever: deps.retriever });
+  const shadow = deps.shadow
+    ? new ShadowRunner({ registry, runtime, sink: deps.shadow.sink, sampleRate: deps.shadow.sampleRate })
+    : undefined;
+  app.decorate('shadow', shadow);
 
   // Schema validation errors in the OpenAI error shape instead of Fastify's default.
   app.setErrorHandler((err: { validation?: unknown; message: string; statusCode?: number }, request, reply) => {
@@ -62,6 +76,7 @@ export function buildApp(deps: AppDeps) {
     }));
 
     chatRoutes(v1, router, deps.quota ?? unlimited);
+    driverRoutes(v1, { registry, runtime, quota: deps.quota ?? unlimited, shadow });
   }, { prefix: '/v1' });
 
   return app;
@@ -70,5 +85,6 @@ export function buildApp(deps: AppDeps) {
 declare module 'fastify' {
   interface FastifyInstance {
     router: Router;
+    shadow?: ShadowRunner;
   }
 }
