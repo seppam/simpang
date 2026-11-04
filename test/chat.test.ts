@@ -54,14 +54,22 @@ describe('POST /v1/chat/completions', () => {
     expect(res.json().error.code).toBe('model_not_found');
   });
 
-  it('says clearly that streaming is not supported yet (400)', async () => {
+  it('streams OpenAI-style SSE chunks, then usage, then [DONE]', async () => {
     const res = await chat(appWith(), {
       model: 'mock/echo',
-      messages: [{ role: 'user', content: 'hi' }],
+      messages: [{ role: 'user', content: 'halo simpang' }],
       stream: true,
     });
-    expect(res.statusCode).toBe(400);
-    expect(res.json().error.code).toBe('stream_not_supported');
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['content-type']).toContain('text/event-stream');
+
+    const events = res.body.split('\n\n').filter(Boolean).map((e) => e.replace(/^data: /, ''));
+    expect(events.at(-1)).toBe('[DONE]');
+    const chunks = events.slice(0, -1).map((e) => JSON.parse(e));
+    const text = chunks.map((c) => c.choices[0]?.delta?.content ?? '').join('');
+    expect(text).toBe('echo: halo simpang');
+    expect(chunks.every((c) => c.object === 'chat.completion.chunk')).toBe(true);
+    expect(chunks.at(-1).usage).toEqual({ prompt_tokens: 2, completion_tokens: 3, total_tokens: 5 });
   });
 
   it('turns a provider failure into 502 without leaking provider internals', async () => {
@@ -73,7 +81,7 @@ describe('POST /v1/chat/completions', () => {
     expect(res.json().error).toEqual({
       type: 'provider_error',
       code: 'upstream_failed',
-      message: 'Provider "mock" failed. Try again later.',
+      message: 'All 1 provider attempt(s) failed. Try again later.',
     });
   });
 });

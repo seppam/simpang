@@ -1,0 +1,23 @@
+{
+  "version": "2026-11-04",
+  "notes": "Approved models, list prices in USD per 1M tokens, and routes. Changes go through git review; usage_events stores the catalog version used for each request. Prices: OpenRouter /api/v1/models reference list prices on 2026-11-04, used for cost comparison even on free tiers.",
+  "models": [
+    { "provider": "mock", "model": "echo", "inputUsdPerMTok": 0, "outputUsdPerMTok": 0, "contextWindow": 8192, "priceSource": "test double" },
+    { "provider": "groq", "model": "openai/gpt-oss-20b", "inputUsdPerMTok": 0.03, "outputUsdPerMTok": 0.13, "contextWindow": 131072, "priceSource": "openrouter list price, openai/gpt-oss-20b" },
+    { "provider": "groq", "model": "openai/gpt-oss-120b", "inputUsdPerMTok": 0.1, "outputUsdPerMTok": 0.5, "contextWindow": 131072, "priceSource": "estimate, verify" },
+    { "provider": "groq", "model": "qwen/qwen3.8-27b", "inputUsdPerMTok": 0.1, "outputUsdPerMTok": 0.3, "contextWindow": 131072, "priceSource": "estimate, verify" },
+    { "provider": "openrouter", "model": "nvidia/nemotron-3.5-lightning:free", "inputUsdPerMTok": 0, "outputUsdPerMTok": 0, "contextWindow": 1000000, "priceSource": "openrouter free model" },
+    { "provider": "gemini", "model": "gemini-2.5-flash", "inputUsdPerMTok": 0.3, "outputUsdPerMTok": 2.5, "contextWindow": 1048576, "priceSource": "openrouter list price, google/gemini-2.5-flash" },
+    { "provider": "gemini", "model": "gemini-2.5-flash-lite", "inputUsdPerMTok": 0.1, "outputUsdPerMTok": 0.4, "contextWindow": 1048576, "priceSource": "openrouter list price, google/gemini-2.5-flash-lite" },
+    { "provider": "anthropic", "model": "claude-haiku-5-5", "inputUsdPerMTok": 0.1, "outputUsdPerMTok": 0.5, "contextWindow": 200000, "priceSource": "openrouter list price, anthropic/claude-haiku-5.5" },
+    { "provider": "huggingface", "model": "Qwen/Qwen2.5-7B-Instruct", "inputUsdPerMTok": 0.1, "outputUsdPerMTok": 0.2, "contextWindow": 32768, "priceSource": "openrouter list price, qwen/qwen-2.5-7b-instruct" },
+    { "provider": "ollama", "model": "qwen2.5:0.5b", "inputUsdPerMTok": 0, "outputUsdPerMTok": 0, "contextWindow": 32768, "priceSource": "self-hosted (hardware cost not modelled yet)" }
+  ],
+  "routes": {
+    "fast": ["groq/openai/gpt-oss-20b", "gemini/gemini-2.5-flash-lite", "openrouter/nvidia/nemotron-3.5-lightning:free", "huggingface/Qwen/Qwen2.5-7B-Instruct"],
+    "quality": ["anthropic/claude-haiku-5-5", "gemini/gemini-2.5-flash", "groq/openai/gpt-oss-120b"],
+    "cheap": ["openrouter/nvidia/nemotron-3.5-lightning:free", "ollama/qwen2.5:0.5b", "groq/openai/gpt-oss-20b"],
+    "local": ["ollama/qwen2.5:0.5b", "huggingface/Qwen/Qwen2.5-7B-Instruct"],
+    "test": ["mock/echo"]
+  }
+}

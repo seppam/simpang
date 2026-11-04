@@ -1,24 +1,32 @@
-import type { ChatRequest, ChatResult, Provider } from './types.ts';
+import { errorFromThrown } from './errors.ts';
+import { postJson } from './http.ts';
+import { readSSE } from './sse.ts';
+import { estimateTokens, type ChatRequest, type ChatResult, type Provider, type StreamChunk } from './types.ts';
 
 type Options = {
   name: string; // the prefix clients use in "model", e.g. "groq"
   baseUrl: string; // e.g. https://api.groq.com/openai/v1
-  apiKey: string;
+  apiKey?: string; // optional: a local Ollama needs none
   timeoutMs?: number;
   fetchFn?: typeof fetch; // injectable so tests never touch the network
 };
 
+type VendorUsage = { prompt_tokens?: number; completion_tokens?: number };
 type VendorResponse = {
   choices?: { message?: { content?: string | null } }[];
-  usage?: { prompt_tokens?: number; completion_tokens?: number };
+  usage?: VendorUsage;
+};
+type VendorChunk = {
+  choices?: { delta?: { content?: string | null } }[];
+  usage?: VendorUsage | null;
 };
 
 // One adapter for every vendor that speaks the OpenAI chat API:
-// Groq, OpenRouter, Ollama and vLLM differ only in baseUrl and key.
+// Groq, OpenRouter, Hugging Face router, Ollama and vLLM differ only in baseUrl and key.
 export class OpenAICompatibleProvider implements Provider {
   readonly name: string;
   private baseUrl: string;
-  private apiKey: string;
+  private apiKey?: string;
   private timeoutMs: number;
   private fetchFn: typeof fetch;
 
@@ -30,32 +38,69 @@ export class OpenAICompatibleProvider implements Provider {
     this.fetchFn = options.fetchFn ?? fetch;
   }
 
-  async chat(request: ChatRequest): Promise<ChatResult> {
-    const res = await this.fetchFn(`${this.baseUrl}/chat/completions`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', authorization: `Bearer ${this.apiKey}` },
-      body: JSON.stringify({
+  private post(request: ChatRequest, extra: Record<string, unknown>, timeoutMs: number) {
+    return postJson({
+      provider: this.name,
+      url: `${this.baseUrl}/chat/completions`,
+      headers: this.apiKey ? { authorization: `Bearer ${this.apiKey}` } : {},
+      body: {
         model: request.model,
         messages: request.messages,
         temperature: request.temperature,
         max_tokens: request.maxTokens,
-      }),
-      // Without a timeout a stuck vendor would hold the connection (and the user) forever.
-      signal: AbortSignal.timeout(this.timeoutMs),
+        ...extra,
+      },
+      timeoutMs,
+      signal: request.signal,
+      fetchFn: this.fetchFn,
     });
-
-    if (!res.ok) {
-      // Status and a short vendor message only: never echo our own headers or key.
-      const detail = (await res.text()).slice(0, 200);
-      throw new Error(`${this.name} returned HTTP ${res.status}: ${detail}`);
-    }
-
-    const data = (await res.json()) as VendorResponse;
-    return {
-      content: data.choices?.[0]?.message?.content ?? '',
-      // The vendor's own counts are what the vendor bills us for.
-      promptTokens: data.usage?.prompt_tokens ?? 0,
-      completionTokens: data.usage?.completion_tokens ?? 0,
-    };
   }
+
+  async chat(request: ChatRequest): Promise<ChatResult> {
+    const res = await this.post(request, {}, this.timeoutMs);
+    const data = (await res.json()) as VendorResponse;
+    const content = data.choices?.[0]?.message?.content ?? '';
+    if (data.usage) {
+      // The vendor's own counts are what the vendor bills us for.
+      return { content, promptTokens: data.usage.prompt_tokens ?? 0, completionTokens: data.usage.completion_tokens ?? 0 };
+    }
+    return { content, ...estimate(request, content) };
+  }
+
+  async *stream(request: ChatRequest): AsyncGenerator<StreamChunk> {
+    // Streams get a longer budget: a long answer legitimately takes a while.
+    const res = await this.post(request, { stream: true, stream_options: { include_usage: true } }, this.timeoutMs * 4);
+    let text = '';
+    let usageSent = false;
+    try {
+      for await (const { data } of readSSE(res.body!)) {
+        if (data === '[DONE]') break;
+        const chunk = JSON.parse(data) as VendorChunk;
+        const piece = chunk.choices?.[0]?.delta?.content;
+        if (piece) {
+          text += piece;
+          yield { type: 'delta', text: piece };
+        }
+        if (chunk.usage) {
+          usageSent = true;
+          yield {
+            type: 'usage',
+            usage: { promptTokens: chunk.usage.prompt_tokens ?? 0, completionTokens: chunk.usage.completion_tokens ?? 0 },
+          };
+        }
+      }
+    } catch (err) {
+      throw errorFromThrown(this.name, err, request.signal);
+    }
+    // Some vendors ignore stream_options: fall back to an estimate, clearly marked.
+    if (!usageSent) yield { type: 'usage', usage: estimate(request, text) };
+  }
+}
+
+function estimate(request: ChatRequest, output: string) {
+  return {
+    promptTokens: estimateTokens(request.messages.map((m) => m.content).join('\n')),
+    completionTokens: estimateTokens(output),
+    estimated: true,
+  };
 }

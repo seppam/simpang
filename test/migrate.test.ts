@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import pg from 'pg';
 import { migrate } from '../src/db/migrate.ts';
 
@@ -33,8 +35,9 @@ describe('migrate()', () => {
 
   it('is safe to run twice', async () => {
     await migrate(pool);
+    const files = (await readdir(join(import.meta.dirname, '../migrations'))).filter((f) => f.endsWith('.sql'));
     const { rows } = await pool.query('SELECT count(*)::int AS n FROM schema_migrations');
-    expect(rows[0].n).toBe(1);
+    expect(rows[0].n).toBe(files.length); // each file recorded exactly once
   });
 
   it('keeps tenants isolated: an api key must belong to an existing tenant', async () => {
