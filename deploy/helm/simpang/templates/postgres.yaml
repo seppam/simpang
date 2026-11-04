@@ -1,0 +1,99 @@
+{{- if .Values.postgres.enabled }}
+# DEV ONLY: a single-replica PostgreSQL with pgvector for local testing (kind, minikube).
+# No backups, no HA, no TLS. Production must use a managed PostgreSQL instead.
+# It is a Helm hook (weight -10) so that the migration Job can connect to it.
+# before-hook-creation keeps it running after the install, and the PVC keeps the data across upgrades.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "simpang.postgresName" . }}
+  labels:
+    {{- include "simpang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  type: ClusterIP
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+      protocol: TCP
+  selector:
+    {{- include "simpang.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "simpang.postgresName" . }}
+  labels:
+    {{- include "simpang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  serviceName: {{ include "simpang.postgresName" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "simpang.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: postgres
+  template:
+    metadata:
+      labels:
+        {{- include "simpang.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: postgres
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: postgres
+          image: {{ printf "%s:%s" .Values.postgres.image.repository .Values.postgres.image.tag | quote }}
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.user | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.database | quote }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "simpang.secretName" . }}
+                  key: POSTGRES_PASSWORD
+            # A subdirectory avoids the "directory exists but is not empty" error on some volumes.
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        {{- with .Values.postgres.persistence.storageClass }}
+        storageClassName: {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.postgres.persistence.size }}
+{{- end }}

@@ -1,0 +1,127 @@
+# Default values for the simpang chart.
+#
+# SECRETS: every key under `secrets` is empty here on purpose. Never commit real
+# provider keys to this file. Either pass them at install time
+# (--set-file / --set secrets.groqApiKey=... from your own shell) or, better, create a
+# Kubernetes Secret yourself and set `existingSecret` to its name.
+
+image:
+  repository: simpang
+  # Defaults to the chart appVersion when empty.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+# The port the app listens on inside the container (PORT env). The Service maps port 80 to it.
+app:
+  port: 3000
+
+service:
+  type: ClusterIP
+  port: 80
+
+# Non-secret environment, rendered into a ConfigMap.
+config:
+  ollamaBaseUrl: ""
+  vllmBaseUrl: ""
+
+# Secret environment. Empty defaults only; see the note at the top of this file.
+secrets:
+  # Full connection string, e.g. postgres://user:password@host:5432/simpang.
+  # Leave empty when postgres.enabled is true (it is then built from the postgres.* values).
+  databaseUrl: ""
+  groqApiKey: ""
+  geminiApiKey: ""
+  openrouterApiKey: ""
+  hfToken: ""
+  anthropicApiKey: ""
+
+# Name of a pre-existing Secret to use instead of the chart-managed one. It must contain
+# the keys DATABASE_URL (required) and any of GROQ_API_KEY, GEMINI_API_KEY,
+# OPENROUTER_API_KEY, HF_TOKEN, ANTHROPIC_API_KEY (optional). When set, the chart does not
+# create a Secret. With postgres.enabled it must also contain POSTGRES_PASSWORD.
+existingSecret: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 512Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Runs `node src/db/migrate-cli.ts` as a Helm hook before install and upgrade.
+migration:
+  backoffLimit: 4
+  # Seconds the wait-for-db init container allows for the database to accept connections.
+  waitTimeoutSeconds: 120
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: simpang.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: simpang-tls
+  #    hosts:
+  #      - simpang.example.com
+
+# OPTIONAL IN-CLUSTER POSTGRES, FOR LOCAL TESTING ONLY (kind, minikube, a throwaway namespace).
+# It is a single-replica StatefulSet with no backups, no HA and no TLS.
+# Production must use a managed PostgreSQL (with pgvector available) and set secrets.databaseUrl
+# or existingSecret instead.
+postgres:
+  enabled: false
+  image:
+    repository: pgvector/pgvector
+    tag: pg17
+    pullPolicy: IfNotPresent
+  user: simpang
+  database: simpang
+  # Required when postgres.enabled is true and no existingSecret is set. Keep it alphanumeric
+  # so it can be placed in a URL without escaping. Empty by default on purpose.
+  password: ""
+  persistence:
+    size: 1Gi
+    # Empty uses the cluster default StorageClass.
+    storageClass: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi

@@ -1,0 +1,19 @@
+node_modules
+npm-debug.log*
+
+# Secrets and local config never go into the image.
+.env
+.env.*
+
+.git
+.github
+
+# Tests, coverage and tooling that the runtime does not need.
+test
+coverage
+bench
+deploy
+docs
+
+Dockerfile
+.dockerignore

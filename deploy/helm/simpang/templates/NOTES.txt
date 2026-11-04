@@ -1,0 +1,27 @@
+simpang {{ .Chart.AppVersion }} is deployed as release "{{ .Release.Name }}".
+
+{{- if and (not .Values.existingSecret) (not .Values.secrets.databaseUrl) (not .Values.postgres.enabled) }}
+
+WARNING: no database is configured. Set secrets.databaseUrl, existingSecret, or postgres.enabled=true.
+The migration Job will fail until one of them is set.
+{{- end }}
+{{- if .Values.postgres.enabled }}
+
+NOTE: postgres.enabled=true runs a single-replica PostgreSQL for local testing only.
+Production should use a managed PostgreSQL instead.
+{{- end }}
+
+1. Check the migration (the Job is deleted after it succeeds, so look at the logs of the pod it created):
+   kubectl get pods -l app.kubernetes.io/instance={{ .Release.Name }}
+
+2. Reach the API from your machine:
+   kubectl port-forward svc/{{ include "simpang.fullname" . }} 8080:{{ .Values.service.port }}
+   curl -s localhost:8080/health
+
+3. Create an API key for a tenant (the key is shown once and only the hash is stored):
+   kubectl exec deploy/{{ include "simpang.fullname" . }} -- node src/db/create-key-cli.ts my-tenant
+
+4. Call a /v1 route with the key:
+   curl -s localhost:8080/v1/... -H "Authorization: Bearer <your-key>"
+
+Uninstalling with `helm uninstall` leaves the hook resources behind (the Secret{{ if .Values.postgres.enabled }}, the in-cluster PostgreSQL Service and StatefulSet and its PersistentVolumeClaim{{ end }}). Delete them by hand when you no longer need them.
