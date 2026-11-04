@@ -1,0 +1,29 @@
+{
+  "name": "simpang-console",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Operator console for the simpang inference gateway.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.10",
+    "@vue/test-utils": "^2.5.1",
+    "happy-dom": "^21.0.4",
+    "typescript": "~5.9.3",
+    "vite": "^8.3.5",
+    "vitest": "^5.1.0",
+    "vue-tsc": "^3.3.14"
+  }
+}

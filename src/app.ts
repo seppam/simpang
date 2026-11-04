@@ -1,4 +1,7 @@
-import Fastify from 'fastify';
+import { createReadStream, existsSync } from 'node:fs';
+import { stat } from 'node:fs/promises';
+import { extname, join, resolve, sep } from 'node:path';
+import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import { requireApiKey } from './auth/plugin.ts';
 import type { KeyStore } from './auth/keyStore.ts';
 import type { Provider } from './providers/types.ts';
@@ -29,10 +32,56 @@ export type AppDeps = {
   shadow?: { sink: ShadowSink; sampleRate: number };
   // Control surface: OAuth2 token endpoint + /admin API. Off when not configured.
   admin?: { store: AdminStore; jwtSecret: string };
+  consoleDir?: string; // built operator console; defaults to web/dist
   logger?: boolean; // on in server.ts, off in tests to keep output quiet
 };
 
 const discardUsage: UsageSink = { record: async () => {} };
+
+const DEFAULT_CONSOLE_DIR = resolve(import.meta.dirname, '../web/dist');
+
+const CONSOLE_TYPES: Record<string, string> = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.json': 'application/json; charset=utf-8',
+  '.woff2': 'font/woff2',
+  '.png': 'image/png',
+};
+
+// Serves the built operator console under /console. Only registered when the build exists.
+// Unknown paths fall back to index.html so the console's client-side routes work on reload.
+// A missing file that has an extension (a stale asset URL) is a 404, never HTML.
+function registerConsole(app: FastifyInstance, dir: string) {
+  const root = resolve(dir);
+  const index = join(root, 'index.html');
+  if (!existsSync(index)) return;
+
+  function send(file: string, relative: string, reply: FastifyReply) {
+    const type = CONSOLE_TYPES[extname(file).toLowerCase()] ?? 'application/octet-stream';
+    // Vite names built assets by content hash, so they can be cached for a year.
+    const cache = relative.startsWith('assets/') ? 'public, max-age=31536000, immutable' : 'no-cache';
+    return reply.header('cache-control', cache).header('x-content-type-options', 'nosniff').type(type).send(createReadStream(file));
+  }
+
+  async function serve(relative: string, reply: FastifyReply) {
+    // Resolve first, then check the result is still inside the build folder: "../" cannot escape.
+    const target = resolve(root, relative.replace(/^\/+/, ''));
+    if (target !== root && !target.startsWith(root + sep)) return reply.code(404).type('text/plain').send('Not found');
+
+    const info = await stat(target).catch(() => null);
+    if (info?.isFile()) return send(target, relative, reply);
+
+    const ext = extname(relative).toLowerCase();
+    if (ext && ext !== '.html') return reply.code(404).type('text/plain').send('Not found');
+    return send(index, 'index.html', reply);
+  }
+
+  app.get('/console', (_request, reply) => serve('', reply));
+  app.get<{ Params: { '*': string } }>('/console/*', (request, reply) => serve(request.params['*'], reply));
+}
 
 // buildApp() only builds the app; it does not listen on a port.
 // That split lets tests use app.inject() while server.ts does the real listen().
@@ -62,6 +111,8 @@ export function buildApp(deps: AppDeps) {
   });
 
   app.get('/health', async () => ({ status: 'ok' }));
+
+  registerConsole(app, deps.consoleDir ?? DEFAULT_CONSOLE_DIR);
 
   app.register(async (v1) => {
     requireApiKey(v1, deps.keyStore);
