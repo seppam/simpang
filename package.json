@@ -8,14 +8,14 @@
     "node": ">=24"
   },
   "scripts": {
-    "dev": "node --watch --experimental-strip-types src/server.ts",
+    "dev": "node --env-file-if-exists=.env --watch src/server.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "db:up": "docker compose up -d --wait db",
     "db:down": "docker compose down",
-    "migrate": "node src/db/migrate-cli.ts",
-    "create-key": "node src/db/create-key-cli.ts"
+    "migrate": "node --env-file-if-exists=.env src/db/migrate-cli.ts",
+    "create-key": "node --env-file-if-exists=.env src/db/create-key-cli.ts"
   },
   "dependencies": {
     "fastify": "^5.12.7",
