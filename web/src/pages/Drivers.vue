@@ -99,7 +99,7 @@ function metricLabel(metric: string): string {
                     class="num"
                     :class="{ 'is-best': cmp.best[metric] === version }"
                   >
-                    {{ formatMetric(cmp.evals[version]?.metrics[metric]) }}
+                    {{ formatMetric(cmp.evals[version]?.metrics[metric], metric) }}
                   </td>
                 </tr>
               </tbody>

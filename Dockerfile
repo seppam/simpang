@@ -6,7 +6,15 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# Stage 2: runtime. There is no build step: Node 24 runs the TypeScript source directly.
+# Stage 2: build the Vue operator console (served by the gateway at /console).
+FROM node:24-alpine AS web
+WORKDIR /web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci
+COPY web ./
+RUN npm run build
+
+# Stage 3: runtime. There is no build step: Node 24 runs the TypeScript source directly.
 FROM node:24-alpine AS runtime
 ENV NODE_ENV=production \
     PORT=3000
@@ -16,6 +24,13 @@ COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node package.json package-lock.json ./
 COPY --chown=node:node src ./src
 COPY --chown=node:node migrations ./migrations
+# Versioned runtime data: model catalog and prices, agent drivers, the RAG corpus,
+# and eval datasets/results (the console shows the latest eval metrics per driver).
+COPY --chown=node:node config ./config
+COPY --chown=node:node drivers ./drivers
+COPY --chown=node:node corpus ./corpus
+COPY --chown=node:node eval ./eval
+COPY --from=web --chown=node:node /web/dist ./web/dist
 
 # The official node image ships a non-root "node" user (uid 1000).
 USER node

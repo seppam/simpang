@@ -11,6 +11,9 @@ spec:
   selector:
     matchLabels:
       {{- include "simpang.selectorLabels" . | nindent 6 }}
+      # The in-cluster Postgres shares name/instance labels: the component label keeps
+      # this selector (and the Service's) from matching the database pod.
+      app.kubernetes.io/component: api
   template:
     metadata:
       annotations:
@@ -22,6 +25,7 @@ spec:
         {{- end }}
       labels:
         {{- include "simpang.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: api
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

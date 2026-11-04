@@ -1,0 +1,24 @@
+# Render blueprint (prepared; see deploy/cloud.md). Secrets are set in the Render dashboard.
+services:
+  - type: web
+    name: simpang
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    preDeployCommand: node src/db/migrate-cli.ts
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: HF_TOKEN
+        sync: false
+      - key: SHADOW_SAMPLE_RATE
+        value: "0.2"

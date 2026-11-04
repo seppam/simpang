@@ -30,7 +30,9 @@ export function formatMs(value: number | null | undefined): string {
 }
 
 // Offline evaluation metrics: integers as-is, fractions to four decimals.
-export function formatMetric(value: number | null | undefined): string {
+// USD metrics (names ending in _usd) keep six decimals: per-task costs are fractions of a cent.
+export function formatMetric(value: number | null | undefined, name = ''): string {
+  if (finite(value) && name.endsWith('_usd')) return formatUsd(value);
   return finite(value) ? metricFormat.format(value) : DASH;
 }
 

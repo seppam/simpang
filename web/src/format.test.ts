@@ -51,3 +51,10 @@ describe('parseQuotaInput', () => {
     expect(parseQuotaInput('12k')).toBe('invalid');
   });
 });
+
+describe('formatMetric for cost metrics', () => {
+  it('keeps six decimals for *_usd metrics so per-task costs stay comparable', () => {
+    expect(formatMetric(0.000167, 'cost_per_success_usd')).toBe('$0.000167');
+    expect(formatMetric(0.3667, 'task_success_rate')).toBe('0.3667');
+  });
+});

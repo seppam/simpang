@@ -17,3 +17,7 @@ docs
 
 Dockerfile
 .dockerignore
+
+# The console is built inside the image; never copy local builds or modules.
+web/node_modules
+web/dist

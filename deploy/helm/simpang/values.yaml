@@ -29,6 +29,9 @@ service:
 config:
   ollamaBaseUrl: ""
   vllmBaseUrl: ""
+  # Share of stable driver calls replayed on the canary version (0 = off, 0.1 = 10%).
+  shadowSampleRate: "0"
+  embeddingModel: ""
 
 # Secret environment. Empty defaults only; see the note at the top of this file.
 secrets:
@@ -40,6 +43,8 @@ secrets:
   openrouterApiKey: ""
   hfToken: ""
   anthropicApiKey: ""
+  # Signs admin access tokens. Empty = generated once by Helm and kept across upgrades.
+  jwtSecret: ""
 
 # Name of a pre-existing Secret to use instead of the chart-managed one. It must contain
 # the keys DATABASE_URL (required) and any of GROQ_API_KEY, GEMINI_API_KEY,

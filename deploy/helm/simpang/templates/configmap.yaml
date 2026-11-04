@@ -6,6 +6,10 @@ metadata:
     {{- include "simpang.labels" . | nindent 4 }}
 data:
   PORT: {{ .Values.app.port | quote }}
+  SHADOW_SAMPLE_RATE: {{ .Values.config.shadowSampleRate | quote }}
+  {{- with .Values.config.embeddingModel }}
+  EMBEDDING_MODEL: {{ . | quote }}
+  {{- end }}
   {{- with .Values.config.ollamaBaseUrl }}
   OLLAMA_BASE_URL: {{ . | quote }}
   {{- end }}
