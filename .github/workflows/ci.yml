@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # A throwaway Postgres (same image as docker-compose.yml) for the integration tests.
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: simpang
+          POSTGRES_PASSWORD: simpang # CI-only database, not a secret
+          POSTGRES_DB: simpang_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U simpang"
+          --health-interval 2s
+          --health-retries 15
+
+    env:
+      TEST_DATABASE_URL: postgres://simpang:simpang@localhost:5432/simpang_test
+      # No provider keys here on purpose: tests use mocks and fake fetch only.
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
