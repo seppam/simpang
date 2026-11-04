@@ -1,0 +1,17 @@
+{
+  "ticket-triage": {
+    "task_success_rate": { "maxDrop": 0.05 },
+    "type_rate": { "maxDrop": 0.05 },
+    "priority_rate": { "maxDrop": 0.05 },
+    "invalid_output_rate": { "max": 0.05 },
+    "cost_per_success_usd": { "maxRatio": 2 },
+    "latency_p95_ms": { "maxRatio": 2 }
+  },
+  "portfolio-qa": {
+    "task_success_rate": { "maxDrop": 0.05 },
+    "declined_rate": { "maxDrop": 0 },
+    "no_forbidden_rate": { "min": 1 },
+    "cost_per_success_usd": { "maxRatio": 3 },
+    "latency_p95_ms": { "maxRatio": 3 }
+  }
+}

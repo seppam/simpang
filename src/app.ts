@@ -13,6 +13,9 @@ import { DriverRegistry } from './drivers/registry.ts';
 import { DriverRuntime } from './drivers/runtime.ts';
 import type { Retriever } from './rag/retriever.ts';
 import { ShadowRunner, type ShadowSink } from './eval/shadow.ts';
+import type { AdminStore } from './admin/store.ts';
+import { oauthRoutes } from './routes/oauth.ts';
+import { adminRoutes } from './routes/admin.ts';
 
 export type AppDeps = {
   keyStore: KeyStore;
@@ -24,6 +27,8 @@ export type AppDeps = {
   retriever?: Retriever;
   drivers?: DriverRegistry;
   shadow?: { sink: ShadowSink; sampleRate: number };
+  // Control surface: OAuth2 token endpoint + /admin API. Off when not configured.
+  admin?: { store: AdminStore; jwtSecret: string };
   logger?: boolean; // on in server.ts, off in tests to keep output quiet
 };
 
@@ -78,6 +83,12 @@ export function buildApp(deps: AppDeps) {
     chatRoutes(v1, router, deps.quota ?? unlimited);
     driverRoutes(v1, { registry, runtime, quota: deps.quota ?? unlimited, shadow });
   }, { prefix: '/v1' });
+
+  if (deps.admin) {
+    const admin = deps.admin;
+    app.register(async (scope) => oauthRoutes(scope, admin));
+    app.register(async (scope) => adminRoutes(scope, { ...admin, registry, router, catalog, providers }), { prefix: '/admin' });
+  }
 
   return app;
 }
