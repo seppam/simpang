@@ -233,8 +233,19 @@ describe('driver routes', () => {
       providers: {},
     });
     const list = await app.inject({ method: 'GET', url: '/v1/drivers', headers: { authorization: 'Bearer a' } });
-    expect(list.json().data.find((d: { name: string }) => d.name === 'ticket-triage').channels).toEqual({ stable: 'v1', canary: 'v2' });
+    expect(list.json().data.find((d: { name: string }) => d.name === 'ticket-triage').channels).toEqual({ stable: 'v2' });
     const missing = await app.inject({ method: 'POST', url: '/v1/drivers/nope/invoke', headers: { authorization: 'Bearer a' }, payload: { input: 'x' } });
     expect(missing.statusCode).toBe(404);
+  });
+});
+
+describe('recent_changes tool', () => {
+  it('lists the changes that touched an app, with dates', async () => {
+    const { TOOLS } = await import('../src/drivers/tools.ts');
+    const out = await TOOLS.recent_changes.run({ app: 'Accounting' }, { tenantId: 't' });
+    expect(out).toContain('CHG-01 on 2026-10-05');
+    expect(out).toContain('CHG-04'); // touches Accounting > Customers too
+    expect(out).not.toContain('CHG-02'); // Inventory only
+    expect(await TOOLS.recent_changes.run({ app: 'Payroll' }, { tenantId: 't' })).toMatch(/No recorded changes/);
   });
 });

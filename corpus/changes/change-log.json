@@ -1,0 +1,43 @@
+[
+  {
+    "id": "CHG-01",
+    "date": "2026-10-05",
+    "description": "Update modul Accounting: konfigurasi pajak PPN 11% pada invoice customer",
+    "menus": [
+      "Accounting > Customers > Invoices"
+    ]
+  },
+  {
+    "id": "CHG-02",
+    "date": "2026-10-08",
+    "description": "Penambahan field wajib Gudang Tujuan pada pengiriman",
+    "menus": [
+      "Inventory > Operations > Deliveries"
+    ]
+  },
+  {
+    "id": "CHG-03",
+    "date": "2026-10-12",
+    "description": "Perubahan template email quotation",
+    "menus": [
+      "Sales > Orders > Quotations"
+    ]
+  },
+  {
+    "id": "CHG-04",
+    "date": "2026-10-13",
+    "description": "Migrasi data: penggabungan customer duplikat",
+    "menus": [
+      "Contacts",
+      "Accounting > Customers"
+    ]
+  },
+  {
+    "id": "CHG-05",
+    "date": "2026-10-14",
+    "description": "Upgrade laporan valuasi stok",
+    "menus": [
+      "Inventory > Reporting > Stock"
+    ]
+  }
+]

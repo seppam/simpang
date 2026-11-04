@@ -19,7 +19,12 @@ import { loadDataset, runEval, sha256, type EvalReport } from './runner.ts';
 const ROOT = join(import.meta.dirname, '../..');
 const { values, positionals } = parseArgs({
   allowPositionals: true,
-  options: { versions: { type: 'string' }, repeat: { type: 'string', default: '1' }, concurrency: { type: 'string', default: '2' } },
+  options: {
+    versions: { type: 'string' },
+    repeat: { type: 'string', default: '1' },
+    concurrency: { type: 'string', default: '2' },
+    pace: { type: 'string', default: '0' }, // ms between rows, e.g. 20000 for tool-using drivers on Groq free tier
+  },
 });
 const name = positionals[0];
 if (!name) {
@@ -66,6 +71,7 @@ for (const version of versions) {
     rows,
     repeat: Number(values.repeat),
     concurrency: Number(values.concurrency),
+    paceMs: Number(values.pace),
     onRow: (r) => process.stderr.write(r.error ? 'E' : r.grade.success ? '.' : 'x'),
   });
   process.stderr.write('\n');

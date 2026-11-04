@@ -100,3 +100,12 @@ describe('regression gate', () => {
     expect(checkGate({ x_rate: { min: 0.5 } }, report({}), report({}))[0].pass).toBe(false);
   });
 });
+
+describe('runEval and quota', () => {
+  it('aborts the whole run when the provider quota is exhausted', async () => {
+    const { QuotaExhaustedError } = await import('../src/eval/runner.ts');
+    const runtime = { run: async () => { throw new GatewayError(429, 'rate_limit_error', 'upstream_quota_exhausted', 'used up.'); } } as unknown as DriverRuntime;
+    const def = { name: 'ticket-triage', version: 'v1', description: '', model: 'x', system: '', output: { type: 'text' } } as DriverDefinition;
+    await expect(runEval({ runtime, def, rows: [{ id: 'T1', input: 'x', expected: {} }], sleep: async () => {} })).rejects.toBeInstanceOf(QuotaExhaustedError);
+  });
+});

@@ -203,3 +203,13 @@ describe('OpenAICompatibleProvider native tool calling', () => {
     expect(body.messages[2]).toEqual({ role: 'tool', tool_call_id: 'call_0', content: '2026-11-04' });
   });
 });
+
+describe('daily quota vs rate limit', () => {
+  it('tells a per-day quota apart from a short rate limit by the 429 body', async () => {
+    const day = fakeJson(429, { error: { message: 'Rate limit reached ... on tokens per day (TPD): Limit 200000, Used 199147' } });
+    const minute = fakeJson(429, { error: { message: 'Rate limit reached ... on tokens per minute (TPM): Limit 8000' } });
+    const p = (f: typeof fetch) => new OpenAICompatibleProvider({ name: 'groq', baseUrl: 'https://x/v1', fetchFn: f });
+    expect((await p(day.fetchFn).chat({ model: 'm', messages }).catch((e) => e)).kind).toBe('quota_exhausted');
+    expect((await p(minute.fetchFn).chat({ model: 'm', messages }).catch((e) => e)).kind).toBe('rate_limit');
+  });
+});

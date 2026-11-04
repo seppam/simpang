@@ -32,6 +32,12 @@ export type EvalReport = {
   rows: RowResult[];
 };
 
+export class QuotaExhaustedError extends Error {
+  constructor(message: string) {
+    super(`Eval aborted, provider quota exhausted: ${message} Results were not written.`);
+  }
+}
+
 export const sha256 = (text: string) => createHash('sha256').update(text).digest('hex');
 
 export function loadDataset(path: string): Row[] {
@@ -55,6 +61,7 @@ export async function runEval(opts: {
   rows: Row[];
   repeat?: number;
   concurrency?: number;
+  paceMs?: number; // fixed pause after each row: keeps a free tier's tokens-per-minute limit from being hit at all
   sleep?: (ms: number) => Promise<void>;
   onRow?: (r: RowResult) => void;
 }): Promise<{ metrics: Record<string, number>; rows: RowResult[] }> {
@@ -85,6 +92,9 @@ export async function runEval(opts: {
           };
         } catch (err) {
           const e = err as GatewayError;
+          // A daily quota will not come back within this run: stop now instead of grinding through
+          // retries and scoring every remaining row as a failure.
+          if (e instanceof GatewayError && e.code === 'upstream_quota_exhausted') throw new QuotaExhaustedError(e.message);
           // Free tiers rate-limit (Groq: 8k tokens/minute): wait and retry instead of scoring
           // a rate limit (429) or a temporarily unavailable provider (503) as a model failure.
           if (e instanceof GatewayError && (e.status === 429 || e.status === 503) && attempt < 5) {
@@ -105,6 +115,7 @@ export async function runEval(opts: {
       }
       results.push(result!);
       opts.onRow?.(result!);
+      if (opts.paceMs && jobs.length) await sleep(opts.paceMs);
     }
   };
   await Promise.all(Array.from({ length: opts.concurrency ?? 2 }, worker));

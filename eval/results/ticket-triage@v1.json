@@ -1,0 +1,1024 @@
+{
+  "driver": "ticket-triage",
+  "version": "v1",
+  "driverHash": "74e7753b2d7acf2160255256e1d6b586a52a62d8df48d2b783b1e6197b7615eb",
+  "dataset": "eval/datasets/ticket-triage.jsonl",
+  "datasetHash": "c612dc769e78c8a574e4fe4cfab4a0367d1108039fbb7cd33eedba953a5cc1a0",
+  "createdAt": "2026-11-04T12:48:33.499Z",
+  "gitSha": "a5edfa6",
+  "repeat": 1,
+  "metrics": {
+    "n": 30,
+    "task_success_rate": 0.1,
+    "error_rate": 0,
+    "invalid_output_rate": 0,
+    "type_rate": 0.6,
+    "priority_rate": 0.2667,
+    "asks_for_info_when_needed_rate": 0.5,
+    "missing_info_f1": 0.2333,
+    "latency_p50_ms": 880,
+    "latency_p95_ms": 1745,
+    "total_cost_usd": 0.001835,
+    "cost_per_success_usd": 0.000612,
+    "mean_tokens": 691
+  },
+  "rows": [
+    {
+      "id": "T01",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug menghitung PPN ganda pada semua invoice baru."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": true,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0
+        }
+      },
+      "latencyMs": 849,
+      "costUsd": 0.000041,
+      "tokens": 573,
+      "provider": "groq"
+    },
+    {
+      "id": "T02",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P2",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug rendering email quotation, logo dan tombol hilang."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 1114,
+      "costUsd": 0.000068,
+      "tokens": 748,
+      "provider": "groq"
+    },
+    {
+      "id": "T03",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug pada validasi delivery order, error tidak teratasi otomatis."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 1,
+          "fp": 3,
+          "fn": 0
+        }
+      },
+      "latencyMs": 1108,
+      "costUsd": 0.000044,
+      "tokens": 555,
+      "provider": "groq"
+    },
+    {
+      "id": "T04",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug pada validasi DO di gudang Cikarang"
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": true,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0
+        }
+      },
+      "latencyMs": 695,
+      "costUsd": 0.000036,
+      "tokens": 508,
+      "provider": "groq"
+    },
+    {
+      "id": "T05",
+      "run": 1,
+      "output": {
+        "type": "data",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Data PO tidak konsisten dengan bill."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 637,
+      "costUsd": 0.000042,
+      "tokens": 545,
+      "provider": "groq"
+    },
+    {
+      "id": "T06",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P2",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug laporan stok tidak akurat."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": true,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 1203,
+      "costUsd": 0.000073,
+      "tokens": 789,
+      "provider": "groq"
+    },
+    {
+      "id": "T07",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "unknown",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Tidak ada detail yang cukup untuk menangani otomatis"
+      },
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "type": true,
+          "priority": true,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 4,
+          "fp": 1,
+          "fn": 0
+        }
+      },
+      "latencyMs": 877,
+      "costUsd": 0.000054,
+      "tokens": 605,
+      "provider": "groq"
+    },
+    {
+      "id": "T08",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [],
+        "needs_human": true,
+        "reason": "Bug tombol warna kurang kontras, prioritas P1."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "latencyMs": 2129,
+      "costUsd": 0.000138,
+      "tokens": 1530,
+      "provider": "groq"
+    },
+    {
+      "id": "T09",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P2",
+        "missing_info": [],
+        "needs_human": true,
+        "reason": "Bug tombol Confirm tidak aktif hanya untuk user Budi."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "latencyMs": 843,
+      "costUsd": 0.000069,
+      "tokens": 747,
+      "provider": "groq"
+    },
+    {
+      "id": "T10",
+      "run": 1,
+      "output": {
+        "type": "data",
+        "priority": "P1",
+        "missing_info": [],
+        "needs_human": true,
+        "reason": "Duplikasi data kontak menyebabkan saldo terpecah."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "latencyMs": 716,
+      "costUsd": 0.000037,
+      "tokens": 506,
+      "provider": "groq"
+    },
+    {
+      "id": "T11",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "unknown",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Masalah jaringan WiFi memerlukan intervensi teknisi."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 883,
+      "costUsd": 0.000058,
+      "tokens": 642,
+      "provider": "groq"
+    },
+    {
+      "id": "T12",
+      "run": 1,
+      "output": {
+        "type": "request",
+        "priority": "unknown",
+        "missing_info": [],
+        "needs_human": true,
+        "reason": "Permintaan pembuatan akun Odoo untuk karyawan baru"
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "latencyMs": 934,
+      "costUsd": 0.000055,
+      "tokens": 623,
+      "provider": "groq"
+    },
+    {
+      "id": "T13",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "unknown",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Informasi tidak lengkap, perlu klarifikasi lebih lanjut."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 1094,
+      "costUsd": 0.000071,
+      "tokens": 754,
+      "provider": "groq"
+    },
+    {
+      "id": "T14",
+      "run": 1,
+      "output": {
+        "type": "data",
+        "priority": "unknown",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Data tidak muncul di To Invoice, perlu verifikasi manual."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 759,
+      "costUsd": 0.000063,
+      "tokens": 685,
+      "provider": "groq"
+    },
+    {
+      "id": "T15",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "unknown",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug email RFQ tidak terkirim, perlu investigasi."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 1,
+          "fp": 4,
+          "fn": 0
+        }
+      },
+      "latencyMs": 773,
+      "costUsd": 0.00005,
+      "tokens": 593,
+      "provider": "groq"
+    },
+    {
+      "id": "T16",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P2",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Vendor tidak menerima email PO, perlu investigasi email server."
+      },
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "type": true,
+          "priority": true,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 1064,
+      "costUsd": 0.000068,
+      "tokens": 728,
+      "provider": "groq"
+    },
+    {
+      "id": "T17",
+      "run": 1,
+      "output": {
+        "type": "data",
+        "priority": "P3",
+        "missing_info": [],
+        "needs_human": true,
+        "reason": "Data invoice jatuh tempo salah, perlu koreksi manual."
+      },
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "type": true,
+          "priority": true,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "latencyMs": 969,
+      "costUsd": 0.000058,
+      "tokens": 663,
+      "provider": "groq"
+    },
+    {
+      "id": "T18",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Laporan penjualan sangat lambat, memerlukan perhatian segera."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 1,
+          "fp": 4,
+          "fn": 0
+        }
+      },
+      "latencyMs": 2969,
+      "costUsd": 0.000073,
+      "tokens": 770,
+      "provider": "groq"
+    },
+    {
+      "id": "T19",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug karena periode sudah terkunci, perlu investigasi."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": true,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0
+        }
+      },
+      "latencyMs": 1065,
+      "costUsd": 0.000063,
+      "tokens": 711,
+      "provider": "groq"
+    },
+    {
+      "id": "T20",
+      "run": 1,
+      "output": {
+        "type": "request",
+        "priority": "unknown",
+        "missing_info": [],
+        "needs_human": true,
+        "reason": "Pertanyaan tentang lokasi tombol ekspor Excel."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "latencyMs": 678,
+      "costUsd": 0.00006,
+      "tokens": 662,
+      "provider": "groq"
+    },
+    {
+      "id": "T21",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Produk tidak menggunakan lot namun sistem meminta lot saat validasi receipt."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0
+        }
+      },
+      "latencyMs": 955,
+      "costUsd": 0.000076,
+      "tokens": 808,
+      "provider": "groq"
+    },
+    {
+      "id": "T22",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Tidak ada detail reproduksi, contoh record, pesan error, waktu mulai, atau user terdampak."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 5,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "latencyMs": 1110,
+      "costUsd": 0.000074,
+      "tokens": 759,
+      "provider": "groq"
+    },
+    {
+      "id": "T23",
+      "run": 1,
+      "output": {
+        "type": "data",
+        "priority": "P2",
+        "missing_info": [
+          "user_terdampak",
+          "waktu_mulai"
+        ],
+        "needs_human": true,
+        "reason": "Perbedaan harga di quotation dengan price list memerlukan verifikasi data."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 1
+        }
+      },
+      "latencyMs": 826,
+      "costUsd": 0.000057,
+      "tokens": 656,
+      "provider": "groq"
+    },
+    {
+      "id": "T24",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug transfer warehouse stuck, perlu investigasi manual."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0
+        }
+      },
+      "latencyMs": 733,
+      "costUsd": 0.000068,
+      "tokens": 733,
+      "provider": "groq"
+    },
+    {
+      "id": "T25",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Perbedaan data laporan memerlukan verifikasi manual"
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 754,
+      "costUsd": 0.000055,
+      "tokens": 637,
+      "provider": "groq"
+    },
+    {
+      "id": "T26",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug akses tidak sah ke data gaji."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 808,
+      "costUsd": 0.000047,
+      "tokens": 571,
+      "provider": "groq"
+    },
+    {
+      "id": "T27",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "unknown",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug pada notifikasi approval PO di atas 50 juta."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 1,
+          "fp": 4,
+          "fn": 0
+        }
+      },
+      "latencyMs": 761,
+      "costUsd": 0.000045,
+      "tokens": 554,
+      "provider": "groq"
+    },
+    {
+      "id": "T28",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P3",
+        "missing_info": [
+          "langkah_reproduksi",
+          "contoh_record",
+          "pesan_error",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Logo tidak muncul di email quotation, perlu investigasi template email."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": false,
+          "priority": true,
+          "asks_for_info_when_needed": false
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0
+        }
+      },
+      "latencyMs": 993,
+      "costUsd": 0.000063,
+      "tokens": 683,
+      "provider": "groq"
+    },
+    {
+      "id": "T29",
+      "run": 1,
+      "output": {
+        "type": "request",
+        "priority": "P2",
+        "missing_info": [],
+        "needs_human": true,
+        "reason": "Permintaan penghapusan data massal memerlukan verifikasi manual."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0
+        }
+      },
+      "latencyMs": 713,
+      "costUsd": 0.000034,
+      "tokens": 468,
+      "provider": "groq"
+    },
+    {
+      "id": "T30",
+      "run": 1,
+      "output": {
+        "type": "bug",
+        "priority": "P1",
+        "missing_info": [
+          "contoh_record",
+          "waktu_mulai",
+          "user_terdampak"
+        ],
+        "needs_human": true,
+        "reason": "Bug Access Denied saat membuka menu Vendors > Bills, perlu peninjauan hak akses."
+      },
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "type": true,
+          "priority": false,
+          "asks_for_info_when_needed": true
+        },
+        "counts": {
+          "tp": 1,
+          "fp": 2,
+          "fn": 1
+        }
+      },
+      "latencyMs": 1275,
+      "costUsd": 0.000095,
+      "tokens": 925,
+      "provider": "groq"
+    }
+  ]
+}

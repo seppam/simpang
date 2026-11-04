@@ -168,3 +168,12 @@ describe('costUsd', () => {
     expect(costUsd(catalog.models[0], 1, 1)).toBe(0.000003);
   });
 });
+
+describe('Router: quota exhausted', () => {
+  it('falls back past a provider whose daily quota is used up, and says so when all are', async () => {
+    const ok = setup({ a: new MockProvider({ name: 'a', fail: 'quota_exhausted' }), b: new MockProvider({ name: 'b' }) });
+    expect((await ok.router.complete(ctx, input('simpang/fast'))).used.provider).toBe('b');
+    const none = setup({ a: new MockProvider({ name: 'a', fail: 'quota_exhausted' }) });
+    await expect(none.router.complete(ctx, input('a/m'))).rejects.toMatchObject({ status: 429, code: 'upstream_quota_exhausted' });
+  });
+});

@@ -222,7 +222,10 @@ function toGatewayError(errors: ProviderError[], candidateCount: number, attempt
   if (candidateCount === 1 && last.kind === 'not_found') {
     return new GatewayError(404, 'invalid_request_error', 'model_not_found', 'The provider does not offer this model (it may be retired).');
   }
-  if (errors.every((e) => e.kind === 'rate_limit')) {
+  if (errors.every((e) => e.kind === 'quota_exhausted')) {
+    return new GatewayError(429, 'rate_limit_error', 'upstream_quota_exhausted', 'Provider quota for this period is used up. Try another model or later.');
+  }
+  if (errors.every((e) => e.kind === 'rate_limit' || e.kind === 'quota_exhausted')) {
     return new GatewayError(429, 'rate_limit_error', 'upstream_rate_limited', 'Providers are rate limiting. Retry later.');
   }
   return new GatewayError(502, 'provider_error', 'upstream_failed', `All ${attempts} provider attempt(s) failed. Try again later.`);
