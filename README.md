@@ -48,7 +48,7 @@ flowchart LR
 
 ## Evaluation results
 
-Real runs on Groq `openai/gpt-oss-20b` (free tier), 4 November 2026, one run each at temperature 0 (single runs vary by a few points; see Known limits).
+Real runs on Groq `openai/gpt-oss-20b` (free tier). ticket-triage: 4 November 2026, one run per version at temperature 0. portfolio-qa: 5 November 2026, three runs per version at temperature 0.2 (round 2, see [Eval history](#eval-history)).
 
 **ticket-triage** (30 labelled tickets): v2 adds label definitions and a priority rubric from the support team's labelling guide.
 
@@ -64,19 +64,33 @@ Real runs on Groq `openai/gpt-oss-20b` (free tier), 4 November 2026, one run eac
 
 v2 passed the gate and was promoted to stable. Error analysis (`eval/review/`) showed the largest remaining error: tickets caused by a recent system change (`change_impact`) are read as `bug`, because the model never sees the change log. v3 (`drivers/ticket-triage/v3.json`) adds the ticket date and a `recent_changes` tool; it is a **draft, not yet evaluated**: the free-tier daily token quota (200k tokens/day) ran out during its first run, and those results were discarded as invalid rather than scored.
 
-**portfolio-qa** (18 questions incl. 5 that must be declined: salary, phone number, unrelated coding, a false claim, prompt injection): v2 lets the model decide when to search (agentic tool use) instead of always retrieving.
+**portfolio-qa** (18 questions incl. 5 that must be declined: salary, phone number, unrelated coding, a false claim, prompt injection): v2 lets the model decide when to search (agentic tool use) instead of always retrieving. Three runs per version (54 rows each), scored with the fixed graders:
 
 | Metric | v1 (always retrieve) | v2 (agentic) |
 |---|---|---|
-| Task success | **83%** | 78% |
-| Declined when it should | **3 of 5** | 2 of 5 |
-| Answers with citations | 61% | 0% |
-| Latency p95 | **1584 ms** | 4404 ms |
-| Cost per completed task | **$0.000056** | $0.000081 |
+| Task success, all rows | 92.6% (50 of 54) | 94.4% (51 of 54) |
+| Task success per run | 17, 17, 16 of 18 | 17, 16, 18 of 18 |
+| Task success, excluding infrastructure errors | 92.6% | **100%** (51 of 51) |
+| Declined when it should | 15 of 15 | 14 of 14 graded |
+| Answerable questions with a citation | **87%** | 0% |
+| Errors (rate limited after retries) | **0** | 3 (5.6%) |
+| Latency p50 / p95 | **798 / 1528 ms** | 1365 / 2290 ms |
+| Cost per completed task | **$0.000051** | $0.000058 |
 
-The regression gate **blocked v2**: lower success, fewer correct refusals, 2.8x slower and more expensive per task. The more "agentic" design was worse for this task, so v1 stays stable and v2 was withdrawn as canary.
+Accuracy is a tie within run-to-run noise. The one real difference is Q18 (career gap, asked in Indonesian): v1's fixed retrieval misses the right chunk in all three runs, v2 searches for it and answers correctly in all three. v2 pays for that with 1.5x the p95 latency, a higher cost per answer and no citations, so its answers cannot be checked against a source. v1 stays stable: v2 as canary would still be blocked by the gate on `error_rate` (3 rate-limited rows, limit 5%), so it needs a clean rerun before it can be compared fairly. Next steps: rerun v2 with `--pace`, and fix v1's retrieval for Q18 (chunking or top-k) rather than switching designs for one question.
 
 Lessons from running evals for real (also in the commit history): the first run was invalid (a non-UUID tenant id broke retrieval, and a rate-limit burst opened the circuit breaker so every later row failed fast); always read the error codes before the scores. The runner now backs off on per-minute limits, and stops immediately when a provider reports a daily quota (`quota_exhausted`), instead of grinding through retries.
+
+## Eval history
+
+Every round of evaluation is a commit and a tag, so a number in this README can be traced to the code, prompts, dataset and graders that produced it. Earlier results are kept as published in `eval/history/`.
+
+| Round | Commit | Why it was run | What it showed |
+|---|---|---|---|
+| r1, 4 Nov 2026 (`eval-r1`) | [ec717ca](https://github.com/seppam/simpang/commit/ec717ca) | First measured comparison of each driver's versions | ticket-triage v2 promoted (10% to 33% task success). portfolio-qa v2 blocked by the gate: 78% vs 83%, one fewer correct refusal, p95 4.4 s vs 1.6 s. One run per version. |
+| r2, 5 Nov 2026 (`eval-r2`) | [dde3332](https://github.com/seppam/simpang/commit/dde3332) | A reader of the launch post asked whether v2 had been rerun to see the variance. It had not: the 83% vs 78% gap was a single question out of 18. | portfolio-qa repeated 3x. Reading the failures found **two grader bugs** that also affected r1: the refusal check missed typographic apostrophes (`I’m`) and "not aware" wording, so correct refusals were scored as failures in both versions; and errored rows counted as failed checks (a fake "leak" in v2). Re-scored with the fixed graders (`npm run eval:regrade`, no model calls), **r1 is a tie: 17 of 18 for both versions, 5 of 5 refusals each**. The r1 conclusion that the simpler design was more accurate does not hold; it is faster, cheaper and cites sources. |
+
+Lesson from r2: a grader is code and needs the same error analysis as the model. Read the failing outputs, not just the score.
 
 ## Run locally
 
@@ -106,6 +120,8 @@ Self-hosted model: `brew install ollama && ollama serve`, `ollama pull qwen2.5:0
 
 ```bash
 npm run eval -- ticket-triage          # runs stable and canary on eval/datasets/ticket-triage.jsonl
+npm run eval -- portfolio-qa --versions v1,v2 --repeat 3   # repeat runs to see the variance
+npm run eval:regrade -- eval/results/portfolio-qa@v1.json  # re-score stored outputs after a grader fix (no model calls)
 npm run eval:gate                      # what CI runs: fresh results + canary within tolerance of stable
 ```
 
@@ -134,7 +150,8 @@ See `deploy/README.md` (chart), `deploy/cloud.md` (managed Postgres + Render pla
 - Native tool calling is implemented for OpenAI-compatible providers; Gemini and Anthropic adapters do not pass tools yet, so the router skips them for tool-using drivers.
 - In the cloud without Ollama, embeddings fall back to a lexical hash embedder (see `deploy/cloud.md`).
 - Graders are keyword and field based; free-text quality beyond that needs the human review files (an LLM judge is a possible next step).
-- Free-tier limits (Groq gpt-oss-20b: 8k tokens/minute, 200k tokens/day) make full evals slow and cap how many runs fit in a day; repeated runs per version (to measure variance) need more quota or more providers.
+- Free-tier limits (Groq gpt-oss-20b: 8k tokens/minute, 200k tokens/day) make full evals slow and cap how many runs fit in a day: three runs of portfolio-qa for two versions use about 130k tokens. ticket-triage is still one run per version.
+- Datasets are small (30 and 18 rows), so differences of one or two rows are noise; repeat runs and read per-question results before trusting a gap.
 
 ## Related
 
