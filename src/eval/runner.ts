@@ -28,6 +28,7 @@ export type EvalReport = {
   createdAt: string;
   gitSha?: string;
   repeat: number;
+  regradedAt?: string; // set when stored outputs were re-scored with a newer grader (no model calls)
   metrics: Record<string, number>;
   rows: RowResult[];
 };
@@ -123,6 +124,21 @@ export async function runEval(opts: {
   return { metrics: aggregate(results), rows: results };
 }
 
+// Re-scores stored outputs with the current graders and recomputes the metrics. Outputs, latency,
+// cost and errors are untouched: only the judgement changes, so the model is not called again.
+export function regradeReport(report: EvalReport, dataset: Row[]): EvalReport {
+  const byId = new Map(dataset.map((r) => [r.id, r]));
+  const rows = report.rows.map((r) => {
+    if (r.error !== null) return r;
+    const row = byId.get(r.id);
+    if (!row) throw new Error(`row ${r.id} is not in the dataset`);
+    // Citation count is not stored, only whether there was one.
+    const citations = r.grade.checks.cited ? 1 : 0;
+    return { ...r, grade: grade(report.driver, row.expected, r.output, citations) };
+  });
+  return { ...report, regradedAt: new Date().toISOString(), metrics: aggregate(rows), rows };
+}
+
 export function aggregate(rows: RowResult[]): Record<string, number> {
   const n = rows.length || 1;
   const rate = (f: (r: RowResult) => boolean) => round(rows.filter(f).length / n);
@@ -133,7 +149,17 @@ export function aggregate(rows: RowResult[]): Record<string, number> {
     error_rate: rate((r) => r.error !== null),
     invalid_output_rate: rate((r) => r.error === 'invalid_output'),
   };
-  for (const c of checkNames) metrics[`${c}_rate`] = rate((r) => r.grade.checks[c] === true);
+  // Check rates are over graded rows only: an errored row was never judged, so it should not
+  // look like a failed check (e.g. a leak in no_forbidden). Errors are counted once, in error_rate.
+  const graded = rows.filter((r) => r.error === null);
+  const gradedRate = (f: (r: RowResult) => boolean) => (graded.length ? round(graded.filter(f).length / graded.length) : 0);
+  metrics.graded_success_rate = gradedRate((r) => r.grade.success);
+  // Each check is a rate over the rows that HAVE it: declined_rate = correct refusals out of the
+  // questions that must be refused, facts_rate = out of the answerable ones.
+  for (const c of checkNames) {
+    const applicable = graded.filter((r) => c in r.grade.checks);
+    metrics[`${c}_rate`] = applicable.length ? round(applicable.filter((r) => r.grade.checks[c] === true).length / applicable.length) : 0;
+  }
 
   const counts = rows.map((r) => r.grade.counts).filter(Boolean) as { tp: number; fp: number; fn: number }[];
   if (counts.length) {

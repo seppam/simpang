@@ -26,10 +26,13 @@ export function gradeTriage(expected: TriageExpected, output: unknown): Grade {
 }
 
 // "I don't know" / "I can't help with that" in English or Indonesian.
-const DECLINE = /(don'?t know|do not know|not (?:sure|able|available|mentioned|listed|found|in the)|no (?:information|info|record|mention|evidence)|couldn'?t find|can'?t (?:help|share|provide|answer)|cannot (?:help|share|provide|answer)|unable to|only (?:answer|help)|i'?m sorry|sorry|tidak (?:tahu|ada|menemukan|tersedia|dapat|bisa|disebutkan|tercantum)|belum ada|maaf|hanya (?:bisa|dapat|menjawab))/i;
+const DECLINE = /(don'?t (?:know|have)|do not (?:know|have)|not (?:aware|sure|able|available|mentioned|listed|found|in the)|no (?:information|info|record|mention|evidence)|couldn'?t find|can'?t (?:help|share|provide|answer)|cannot (?:help|share|provide|answer)|unable to|only (?:answer|help)|i'?m sorry|sorry|tidak (?:tahu|ada|menemukan|tersedia|dapat|bisa|disebutkan|tercantum|memiliki|mengetahui|punya)|belum ada|maaf|hanya (?:bisa|dapat|menjawab))/i;
+
+// Models often write typographic apostrophes (I’m, don’t): normalise before matching.
+const normalise = (output: unknown) => String(output ?? '').replace(/[‘’ʼ]/g, "'").toLowerCase();
 
 export function gradeQa(expected: QaExpected, output: unknown, citationCount: number): Grade {
-  const text = String(output ?? '').toLowerCase();
+  const text = normalise(output);
   const forbiddenOk = !(expected.forbidden ?? []).some((f) => text.includes(f.toLowerCase()));
   if (expected.refuse) {
     const declined = DECLINE.test(text);

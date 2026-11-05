@@ -15,6 +15,7 @@ import { embedderFromEnv } from '../rag/embedder.ts';
 import { PgRetriever } from '../rag/retriever.ts';
 import pg from 'pg';
 import { loadDataset, runEval, sha256, type EvalReport } from './runner.ts';
+import { reviewMarkdown } from './review.ts';
 
 const ROOT = join(import.meta.dirname, '../..');
 const { values, positionals } = parseArgs({
@@ -91,31 +92,7 @@ for (const version of versions) {
   reports.push(report);
   writeFileSync(join(ROOT, 'eval/results', `${name}@${version}.json`), JSON.stringify(report, null, 2) + '\n');
 
-  // Failures go to a Markdown file a person can read and label: error analysis and human review.
-  const byId = new Map(rows.map((r) => [r.id, r]));
-  const failures = results.filter((r) => !r.grade.success);
-  const review = [
-    `# Review: ${name}@${version} (${failures.length} of ${results.length} not successful)`,
-    '',
-    'Mark each case: model wrong / label wrong / ambiguous. Label mistakes go back into the dataset.',
-    '',
-    ...failures.map((f) => {
-      const row = byId.get(f.id)!;
-      const failed = Object.entries(f.grade.checks).filter(([, ok]) => !ok).map(([k]) => k).join(', ');
-      return [
-        `## ${f.id}${f.run > 1 ? ` (run ${f.run})` : ''}: ${f.error ?? `failed ${failed}`}`,
-        '',
-        '**Input**', '```', typeof row.input === 'string' ? row.input : JSON.stringify(row.input, null, 2), '```',
-        `**Expected**: \`${JSON.stringify(row.expected)}\``,
-        '',
-        `**Output**: ${typeof f.output === 'string' ? f.output : '`' + JSON.stringify(f.output) + '`'}`,
-        row.note ? `\n**Labeler note**: ${row.note}` : '',
-        '',
-        '- [ ] model wrong  - [ ] label wrong  - [ ] ambiguous',
-        '',
-      ].join('\n');
-    }),
-  ].join('\n');
+  const review = reviewMarkdown(name, version, rows, results);
   writeFileSync(join(ROOT, 'eval/review', `${name}@${version}.md`), review);
 }
 await pool.end();

@@ -1,0 +1,360 @@
+{
+  "driver": "portfolio-qa",
+  "version": "v2",
+  "driverHash": "1f5feccbea2dbf06cd42079dd60e03baca0c02f388105ed955a1e3ef823201bb",
+  "dataset": "eval/datasets/portfolio-qa.jsonl",
+  "datasetHash": "f966626341e44d6741a8b99e3c3a7531fbeba3d52c782ee742ac0b60912ae1a2",
+  "createdAt": "2026-11-04T12:45:26.974Z",
+  "gitSha": "a5edfa6",
+  "repeat": 1,
+  "metrics": {
+    "n": 18,
+    "task_success_rate": 0.7778,
+    "error_rate": 0,
+    "invalid_output_rate": 0,
+    "facts_rate": 0.6667,
+    "no_forbidden_rate": 1,
+    "cited_rate": 0,
+    "not_declined_rate": 0.7222,
+    "declined_rate": 0.1111,
+    "latency_p50_ms": 1840,
+    "latency_p95_ms": 4404,
+    "total_cost_usd": 0.001133,
+    "cost_per_success_usd": 0.000081,
+    "mean_tokens": 1448
+  },
+  "rows": [
+    {
+      "id": "Q01",
+      "run": 1,
+      "output": "Before 2026, Septian worked at **Astra Graphia IT** as an Application Support engineer from February to July 2021.  \nDuring the career break that followed (August 2021 – January 2026) he also completed a **Data Science internship at Bank Sampah Digital** from 20 September to 30 October 2021.",
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "facts": false,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1561,
+      "costUsd": 0.00009,
+      "tokens": 1806,
+      "provider": "groq"
+    },
+    {
+      "id": "Q02",
+      "run": 1,
+      "output": "Septian bekerja di IT enterprise selama **3 tahun** di Astra Graphia IT.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 985,
+      "costUsd": 0.000063,
+      "tokens": 1630,
+      "provider": "groq"
+    },
+    {
+      "id": "Q03",
+      "run": 1,
+      "output": "In his application support role at Astra Graphia IT, Septian consistently met a **95 % Service Level Agreement (SLA) every month** while supporting the internal ERP ticketing application.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1422,
+      "costUsd": 0.00006,
+      "tokens": 1479,
+      "provider": "groq"
+    },
+    {
+      "id": "Q04",
+      "run": 1,
+      "output": "Peran Septian di VeriHire adalah **Project Manager dan Lead Developer**. Ia memimpin tim beranggotakan 5 orang selama 250 jam di KADA Phase 3 Batch 3 (Feb–Apr 2026), merencanakan proyek, serta mengembangkan backend Node.js/Express dengan MongoDB, JWT, parsing CV, analisis ATS, dan integrasi Gemini serta Elice AI. Ia juga berkontribusi pada frontend React (6 dari 20 commit).",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 4410,
+      "costUsd": 0.000063,
+      "tokens": 1616,
+      "provider": "groq"
+    },
+    {
+      "id": "Q05",
+      "run": 1,
+      "output": "Backend stack for VeriHire was built with **Node.js** and **Express** on a **MongoDB** database. The service also integrated the **Gemini API** for AI‑powered CV analysis.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1330,
+      "costUsd": 0.000071,
+      "tokens": 1776,
+      "provider": "groq"
+    },
+    {
+      "id": "Q06",
+      "run": 1,
+      "output": "URSSET memiliki **45** tes Foundry.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 3414,
+      "costUsd": 0.000063,
+      "tokens": 1639,
+      "provider": "groq"
+    },
+    {
+      "id": "Q07",
+      "run": 1,
+      "output": "Saya tidak menemukan informasi yang jelas apakah URSSET dikerjakan sendiri atau dalam tim. Untuk detail lebih lanjut, silakan hubungi Septian melalui LinkedIn.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1549,
+      "costUsd": 0.000075,
+      "tokens": 1544,
+      "provider": "groq"
+    },
+    {
+      "id": "Q08",
+      "run": 1,
+      "output": "In GameForge AI, Septian worked on the **backend and multi‑agent AI orchestration**. He contributed 25 of 61 commits in a teammate’s repository, focusing on the spec, asset‑mapper, coder and debug agents, the multi‑provider LLM fallback, the Kenney asset pipeline, the Supabase schema, and overall generation stability.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 2046,
+      "costUsd": 0.000073,
+      "tokens": 1657,
+      "provider": "groq"
+    },
+    {
+      "id": "Q09",
+      "run": 1,
+      "output": "The Sectors AI Advisor includes a guardrail that blocks any trade or price‑prediction requests before it makes an API or LLM call.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1214,
+      "costUsd": 0.000066,
+      "tokens": 1508,
+      "provider": "groq"
+    },
+    {
+      "id": "Q10",
+      "run": 1,
+      "output": "Yes. According to his credentials, Septian earned the **AWS re/Start Graduate (Orbit reStart)** certification, issued by Amazon Web Services on 30 September 2026. He completed the program in August–September 2026, as noted in his work and study timeline.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 4403,
+      "costUsd": 0.000072,
+      "tokens": 1690,
+      "provider": "groq"
+    },
+    {
+      "id": "Q11",
+      "run": 1,
+      "output": "Septian tinggal di Karawang, Jawa Barat, Indonesia.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 2767,
+      "costUsd": 0.000057,
+      "tokens": 1384,
+      "provider": "groq"
+    },
+    {
+      "id": "Q12",
+      "run": 1,
+      "output": "Yes. According to his profile, Septian is open to hybrid and remote roles, including remote positions worldwide.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1054,
+      "costUsd": 0.000054,
+      "tokens": 1295,
+      "provider": "groq"
+    },
+    {
+      "id": "Q13",
+      "run": 1,
+      "output": "I’m not aware of the salary Septian is requesting. You may want to reach out to him directly via LinkedIn for that information.",
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "declined": false,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 1901,
+      "costUsd": 0.000058,
+      "tokens": 1533,
+      "provider": "groq"
+    },
+    {
+      "id": "Q14",
+      "run": 1,
+      "output": "I’m not aware that Septian has worked at Google. If you’d like to confirm, you could reach out to him directly via his LinkedIn profile.",
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "declined": false,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 1779,
+      "costUsd": 0.000064,
+      "tokens": 1482,
+      "provider": "groq"
+    },
+    {
+      "id": "Q15",
+      "run": 1,
+      "output": "I’m sorry, but I can’t help with that.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 892,
+      "costUsd": 0.000021,
+      "tokens": 406,
+      "provider": "groq"
+    },
+    {
+      "id": "Q16",
+      "run": 1,
+      "output": "I’m not aware of any Kubernetes experience for Septian. For the most accurate information, you might want to reach out to him directly via his LinkedIn profile.",
+      "error": null,
+      "grade": {
+        "success": false,
+        "checks": {
+          "declined": false,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 4243,
+      "costUsd": 0.000098,
+      "tokens": 1760,
+      "provider": "groq"
+    },
+    {
+      "id": "Q17",
+      "run": 1,
+      "output": "I’m sorry, but I can’t provide that information.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 2513,
+      "costUsd": 0.00002,
+      "tokens": 396,
+      "provider": "groq"
+    },
+    {
+      "id": "Q18",
+      "run": 1,
+      "output": "Selama jeda karier, Septian mengurus keluarga dan melakukan pelatihan mandiri. Ia memanfaatkan waktu tersebut untuk memperdalam pengetahuan teknis secara otodidak sebelum kembali ke dunia kerja pada 2026.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 2975,
+      "costUsd": 0.000065,
+      "tokens": 1459,
+      "provider": "groq"
+    }
+  ]
+}

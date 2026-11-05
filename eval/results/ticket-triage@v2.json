@@ -12,6 +12,7 @@
     "task_success_rate": 0.3333,
     "error_rate": 0,
     "invalid_output_rate": 0,
+    "graded_success_rate": 0.3333,
     "type_rate": 0.6,
     "priority_rate": 0.5,
     "asks_for_info_when_needed_rate": 0.5667,
@@ -942,5 +943,6 @@
       "tokens": 992,
       "provider": "groq"
     }
-  ]
+  ],
+  "regradedAt": "2026-11-05T11:53:32.855Z"
 }

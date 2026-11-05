@@ -19,7 +19,8 @@
     "create-client": "node --env-file-if-exists=.env src/db/create-client-cli.ts",
     "ingest": "node --env-file-if-exists=.env src/rag/ingest-cli.ts",
     "eval": "node --env-file-if-exists=.env src/eval/eval-cli.ts",
-    "eval:gate": "node src/eval/gate-cli.ts"
+    "eval:gate": "node src/eval/gate-cli.ts",
+    "eval:regrade": "node src/eval/regrade-cli.ts"
   },
   "dependencies": {
     "ajv": "^8.20.0",

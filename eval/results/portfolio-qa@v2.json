@@ -4,43 +4,76 @@
   "driverHash": "1f5feccbea2dbf06cd42079dd60e03baca0c02f388105ed955a1e3ef823201bb",
   "dataset": "eval/datasets/portfolio-qa.jsonl",
   "datasetHash": "f966626341e44d6741a8b99e3c3a7531fbeba3d52c782ee742ac0b60912ae1a2",
-  "createdAt": "2026-11-04T12:45:26.974Z",
-  "gitSha": "a5edfa6",
-  "repeat": 1,
+  "createdAt": "2026-11-05T11:50:53.284Z",
+  "gitSha": "e40310c",
+  "repeat": 3,
   "metrics": {
-    "n": 18,
-    "task_success_rate": 0.7778,
-    "error_rate": 0,
+    "n": 54,
+    "task_success_rate": 0.9444,
+    "error_rate": 0.0556,
     "invalid_output_rate": 0,
-    "facts_rate": 0.6667,
+    "graded_success_rate": 1,
+    "facts_rate": 1,
     "no_forbidden_rate": 1,
     "cited_rate": 0,
-    "not_declined_rate": 0.7222,
-    "declined_rate": 0.1111,
-    "latency_p50_ms": 1840,
-    "latency_p95_ms": 4404,
-    "total_cost_usd": 0.001133,
-    "cost_per_success_usd": 0.000081,
-    "mean_tokens": 1448
+    "not_declined_rate": 1,
+    "declined_rate": 1,
+    "latency_p50_ms": 1365,
+    "latency_p95_ms": 2290,
+    "total_cost_usd": 0.00298,
+    "cost_per_success_usd": 0.000058,
+    "mean_tokens": 1318
   },
   "rows": [
     {
       "id": "Q01",
       "run": 1,
-      "output": "Before 2026, Septian worked at **Astra Graphia IT** as an Application Support engineer from February to July 2021.  \nDuring the career break that followed (August 2021 – January 2026) he also completed a **Data Science internship at Bank Sampah Digital** from 20 September to 30 October 2021.",
-      "error": null,
+      "output": null,
+      "error": "upstream_rate_limited",
       "grade": {
         "success": false,
+        "checks": {}
+      },
+      "latencyMs": 159048,
+      "costUsd": 0,
+      "tokens": 0
+    },
+    {
+      "id": "Q01",
+      "run": 2,
+      "output": "Before 2026, Septian worked at **Astra Graphia IT** for three years (2018‑2021), where he wrote and fixed ASP.NET systems, produced business process and technical design documents, and supported an internal ERP ticketing application that met its 95 % SLA every month. After that, he took a career break for family caregiving and self‑directed retraining.",
+      "error": null,
+      "grade": {
+        "success": true,
         "checks": {
-          "facts": false,
+          "facts": true,
           "no_forbidden": true,
           "cited": false,
           "not_declined": true
         }
       },
-      "latencyMs": 1561,
-      "costUsd": 0.00009,
-      "tokens": 1806,
+      "latencyMs": 1986,
+      "costUsd": 0.000074,
+      "tokens": 1684,
+      "provider": "groq"
+    },
+    {
+      "id": "Q01",
+      "run": 3,
+      "output": "Before 2026, Septian worked at **Astra Graphia IT** for three years (2018‑2021), where he wrote and fixed ASP.NET systems, produced business process and technical design documents, and supported an internal ERP ticketing application that met its 95 % SLA every month. After that, he took a career break for family caregiving and self‑directed retraining before returning to work in 2026.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 2138,
+      "costUsd": 0.000077,
+      "tokens": 1709,
       "provider": "groq"
     },
     {
@@ -57,9 +90,41 @@
           "not_declined": true
         }
       },
-      "latencyMs": 985,
-      "costUsd": 0.000063,
-      "tokens": 1630,
+      "latencyMs": 1209,
+      "costUsd": 0.000059,
+      "tokens": 1595,
+      "provider": "groq"
+    },
+    {
+      "id": "Q02",
+      "run": 2,
+      "output": null,
+      "error": "upstream_rate_limited",
+      "grade": {
+        "success": false,
+        "checks": {}
+      },
+      "latencyMs": 158456,
+      "costUsd": 0,
+      "tokens": 0
+    },
+    {
+      "id": "Q02",
+      "run": 3,
+      "output": "Septian bekerja di IT enterprise selama **3 tahun** di Astra Graphia IT.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 2115,
+      "costUsd": 0.000064,
+      "tokens": 1643,
       "provider": "groq"
     },
     {
@@ -76,15 +141,53 @@
           "not_declined": true
         }
       },
-      "latencyMs": 1422,
-      "costUsd": 0.00006,
-      "tokens": 1479,
+      "latencyMs": 1079,
+      "costUsd": 0.000061,
+      "tokens": 1489,
+      "provider": "groq"
+    },
+    {
+      "id": "Q03",
+      "run": 2,
+      "output": "He met a **95 % SLA every month** during his application support role at Astra Graphia IT.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1454,
+      "costUsd": 0.000059,
+      "tokens": 1468,
+      "provider": "groq"
+    },
+    {
+      "id": "Q03",
+      "run": 3,
+      "output": "He met the 95 % SLA every month while supporting the internal ERP ticketing application at Astra Graphia IT.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1293,
+      "costUsd": 0.000053,
+      "tokens": 1421,
       "provider": "groq"
     },
     {
       "id": "Q04",
       "run": 1,
-      "output": "Peran Septian di VeriHire adalah **Project Manager dan Lead Developer**. Ia memimpin tim beranggotakan 5 orang selama 250 jam di KADA Phase 3 Batch 3 (Feb–Apr 2026), merencanakan proyek, serta mengembangkan backend Node.js/Express dengan MongoDB, JWT, parsing CV, analisis ATS, dan integrasi Gemini serta Elice AI. Ia juga berkontribusi pada frontend React (6 dari 20 commit).",
+      "output": "Di VeriHire, Septian berperan sebagai Project Manager dan Lead Developer. Ia memimpin tim beranggotakan 5 orang selama fase 3 Batch 3 KADA (Feb–Apr 2026). Tugas utamanya adalah mengembangkan backend menggunakan Node.js, Express, dan MongoDB, serta mengintegrasikan AI Gemini dan Elice. Ia juga turut berkontribusi pada beberapa bagian frontend React.",
       "error": null,
       "grade": {
         "success": true,
@@ -95,15 +198,53 @@
           "not_declined": true
         }
       },
-      "latencyMs": 4410,
-      "costUsd": 0.000063,
-      "tokens": 1616,
+      "latencyMs": 1314,
+      "costUsd": 0.000065,
+      "tokens": 1499,
+      "provider": "groq"
+    },
+    {
+      "id": "Q04",
+      "run": 2,
+      "output": "Di VeriHire, Septian berperan sebagai Project Manager (PM) dan Lead Developer. Ia memimpin tim beranggotakan 5 orang selama fase 3 Batch 3 Korea ASEAN Digital Academy (Feb–Apr 2026) dan bertanggung jawab atas perencanaan proyek serta pengembangan backend Node.js/Express dengan MongoDB, termasuk autentikasi JWT, parsing CV, analisis ATS, dan integrasi AI Gemini serta Elice. Selain itu, ia juga berkontribusi pada bagian frontend React.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 952,
+      "costUsd": 0.000059,
+      "tokens": 1456,
+      "provider": "groq"
+    },
+    {
+      "id": "Q04",
+      "run": 3,
+      "output": "Di VeriHire, Septian berperan sebagai Project Manager dan Lead Developer. Ia memimpin tim beranggotakan 5 orang selama fase 3 Batch 3 Korea ASEAN Digital Academy (Feb–Apr 2026). Tugas utamanya adalah mengembangkan backend Node.js/Express dengan MongoDB, termasuk autentikasi JWT, parsing CV, analisis ATS, serta integrasi AI Gemini dan Elice. Ia juga turut berkontribusi pada beberapa bagian frontend React.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1654,
+      "costUsd": 0.000064,
+      "tokens": 1493,
       "provider": "groq"
     },
     {
       "id": "Q05",
       "run": 1,
-      "output": "Backend stack for VeriHire was built with **Node.js** and **Express** on a **MongoDB** database. The service also integrated the **Gemini API** for AI‑powered CV analysis.",
+      "output": "The backend for VeriHire was built with **Node.js** and **Express** and uses **MongoDB** for storage. It includes JWT authentication, CV parsing, ATS analysis, and integration with Gemini and Elice AI APIs.",
       "error": null,
       "grade": {
         "success": true,
@@ -114,15 +255,53 @@
           "not_declined": true
         }
       },
-      "latencyMs": 1330,
-      "costUsd": 0.000071,
-      "tokens": 1776,
+      "latencyMs": 1452,
+      "costUsd": 0.000067,
+      "tokens": 1743,
+      "provider": "groq"
+    },
+    {
+      "id": "Q05",
+      "run": 2,
+      "output": "Backend stack for VeriHire was built with **Node.js** and **Express** on top of **MongoDB**. The service handled JWT authentication, CV parsing, ATS analysis, and integrated Gemini and Elice AI APIs.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1350,
+      "costUsd": 0.000069,
+      "tokens": 1760,
+      "provider": "groq"
+    },
+    {
+      "id": "Q05",
+      "run": 3,
+      "output": "For VeriHire, Septian built the backend using **Node.js** with **Express** and stored data in **MongoDB**. The service handled JWT authentication, CV parsing, ATS analysis, and integrated the Gemini and Elice AI APIs.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1085,
+      "costUsd": 0.000075,
+      "tokens": 1809,
       "provider": "groq"
     },
     {
       "id": "Q06",
       "run": 1,
-      "output": "URSSET memiliki **45** tes Foundry.",
+      "output": "URSSET has **45 Foundry tests** covering its Solidity contracts.",
       "error": null,
       "grade": {
         "success": true,
@@ -133,14 +312,71 @@
           "not_declined": true
         }
       },
-      "latencyMs": 3414,
+      "latencyMs": 1209,
       "costUsd": 0.000063,
-      "tokens": 1639,
+      "tokens": 1640,
+      "provider": "groq"
+    },
+    {
+      "id": "Q06",
+      "run": 2,
+      "output": "URSSET has **45 Foundry tests**.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1471,
+      "costUsd": 0.000061,
+      "tokens": 1627,
+      "provider": "groq"
+    },
+    {
+      "id": "Q06",
+      "run": 3,
+      "output": "URSSET has **45 Foundry tests**. These tests cover the factory, KYC, sale, rent, marketplace, and property‑based invariants.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1963,
+      "costUsd": 0.000066,
+      "tokens": 1664,
       "provider": "groq"
     },
     {
       "id": "Q07",
       "run": 1,
+      "output": "URSSET dikerjakan secara solo.  \nProyek ini merupakan build tunggal untuk Hackathon Ethereum Jakarta 2026, di mana saya mengembangkan aplikasi Next.js dengan wallet Privy, kontrak Solidity, dan pengujian Foundry.  \nTidak ada kolaborator tim yang terlibat dalam pembuatan proyek ini.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1420,
+      "costUsd": 0.000065,
+      "tokens": 1472,
+      "provider": "groq"
+    },
+    {
+      "id": "Q07",
+      "run": 2,
       "output": "Saya tidak menemukan informasi yang jelas apakah URSSET dikerjakan sendiri atau dalam tim. Untuk detail lebih lanjut, silakan hubungi Septian melalui LinkedIn.",
       "error": null,
       "grade": {
@@ -152,15 +388,34 @@
           "not_declined": true
         }
       },
-      "latencyMs": 1549,
-      "costUsd": 0.000075,
-      "tokens": 1544,
+      "latencyMs": 1499,
+      "costUsd": 0.000067,
+      "tokens": 1484,
+      "provider": "groq"
+    },
+    {
+      "id": "Q07",
+      "run": 3,
+      "output": "Saya tidak menemukan informasi yang jelas apakah URSSET dikerjakan sendiri atau dalam tim. Silakan hubungi Septian melalui LinkedIn untuk detail lebih lanjut.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1283,
+      "costUsd": 0.000071,
+      "tokens": 1510,
       "provider": "groq"
     },
     {
       "id": "Q08",
       "run": 1,
-      "output": "In GameForge AI, Septian worked on the **backend and multi‑agent AI orchestration**. He contributed 25 of 61 commits in a teammate’s repository, focusing on the spec, asset‑mapper, coder and debug agents, the multi‑provider LLM fallback, the Kenney asset pipeline, the Supabase schema, and overall generation stability.",
+      "output": "In GameForge AI, Septian worked on the backend and multi‑agent AI orchestration. He contributed 25 of 61 commits in a teammate’s repository, handling the spec, asset‑mapper, coder and debug agents, the multi‑provider LLM fallback, the Kenney asset pipeline, the Supabase schema, and overall generation stability.",
       "error": null,
       "grade": {
         "success": true,
@@ -171,15 +426,53 @@
           "not_declined": true
         }
       },
-      "latencyMs": 2046,
-      "costUsd": 0.000073,
-      "tokens": 1657,
+      "latencyMs": 1429,
+      "costUsd": 0.000072,
+      "tokens": 1650,
+      "provider": "groq"
+    },
+    {
+      "id": "Q08",
+      "run": 2,
+      "output": "In GameForge AI, Septian served as the backend and multi‑agent AI orchestrator. He contributed 25 of the 61 commits in a teammate’s repository, working on the project spec, asset‑mapper, coder and debug agents, the multi‑provider LLM fallback, the Kenney asset pipeline, the Supabase schema, and overall generation stability.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 2963,
+      "costUsd": 0.00007,
+      "tokens": 1634,
+      "provider": "groq"
+    },
+    {
+      "id": "Q08",
+      "run": 3,
+      "output": "In GameForge AI, Septian was responsible for the **backend and multi‑agent AI orchestration**. He contributed 25 of the 61 commits in his teammate’s repository, working on the spec, asset‑mapper, coder and debug agents, the multi‑provider LLM fallback, the Kenney asset pipeline, the Supabase schema, and overall generation stability. The project is a team effort of four remote developers, and the product is still being improved.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1640,
+      "costUsd": 0.000065,
+      "tokens": 1594,
       "provider": "groq"
     },
     {
       "id": "Q09",
       "run": 1,
-      "output": "The Sectors AI Advisor includes a guardrail that blocks any trade or price‑prediction requests before it makes an API or LLM call.",
+      "output": "The Sectors AI Advisor includes a guardrail that refuses any trade or price‑prediction requests before making an API or LLM call. This means the system will not provide stock price predictions or trading instructions.",
       "error": null,
       "grade": {
         "success": true,
@@ -190,15 +483,53 @@
           "not_declined": true
         }
       },
-      "latencyMs": 1214,
-      "costUsd": 0.000066,
-      "tokens": 1508,
+      "latencyMs": 1845,
+      "costUsd": 0.000067,
+      "tokens": 1514,
+      "provider": "groq"
+    },
+    {
+      "id": "Q09",
+      "run": 2,
+      "output": "Sectors AI Advisor uses a guardrail that blocks any request for trade or price‑prediction before it even calls an API or an LLM. In other words, it refuses to provide stock price predictions.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1024,
+      "costUsd": 0.000058,
+      "tokens": 1449,
+      "provider": "groq"
+    },
+    {
+      "id": "Q09",
+      "run": 3,
+      "output": "Sectors AI Advisor menolak permintaan prediksi harga saham sebelum melakukan panggilan API atau LLM. Guardrail‑nya secara eksplisit menolak permintaan tersebut.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1403,
+      "costUsd": 0.00006,
+      "tokens": 1457,
       "provider": "groq"
     },
     {
       "id": "Q10",
       "run": 1,
-      "output": "Yes. According to his credentials, Septian earned the **AWS re/Start Graduate (Orbit reStart)** certification, issued by Amazon Web Services on 30 September 2026. He completed the program in August–September 2026, as noted in his work and study timeline.",
+      "output": "Yes. According to his credentials, Septian completed the **AWS re/Start Graduate (Orbit reStart)** program in **August–September 2026** (credential issued 30 Sep 2026).",
       "error": null,
       "grade": {
         "success": true,
@@ -209,9 +540,47 @@
           "not_declined": true
         }
       },
-      "latencyMs": 4403,
-      "costUsd": 0.000072,
-      "tokens": 1690,
+      "latencyMs": 1290,
+      "costUsd": 0.000061,
+      "tokens": 1604,
+      "provider": "groq"
+    },
+    {
+      "id": "Q10",
+      "run": 2,
+      "output": "Yes, Septian completed the **AWS re/Start Graduate (Orbit reStart)** program in August–September 2026, as listed in his credentials. This training is issued by Amazon Web Services and is part of his recent cloud‑trainee experience.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1503,
+      "costUsd": 0.000062,
+      "tokens": 1607,
+      "provider": "groq"
+    },
+    {
+      "id": "Q10",
+      "run": 3,
+      "output": "Yes. According to the credentials listed on his site, Septian earned the **AWS re/Start Graduate (Orbit reStart)** credential, issued by Amazon Web Services in **August‑September 2026** (credential issued 30 Sep 2026). This training is part of his “Independent builder and cloud trainee” period from April 2026 to the present.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1173,
+      "costUsd": 0.000075,
+      "tokens": 1709,
       "provider": "groq"
     },
     {
@@ -228,15 +597,15 @@
           "not_declined": true
         }
       },
-      "latencyMs": 2767,
+      "latencyMs": 1304,
       "costUsd": 0.000057,
-      "tokens": 1384,
+      "tokens": 1387,
       "provider": "groq"
     },
     {
-      "id": "Q12",
-      "run": 1,
-      "output": "Yes. According to his profile, Septian is open to hybrid and remote roles, including remote positions worldwide.",
+      "id": "Q11",
+      "run": 2,
+      "output": "Septian tinggal di Karawang, Jawa Barat, Indonesia.",
       "error": null,
       "grade": {
         "success": true,
@@ -247,43 +616,187 @@
           "not_declined": true
         }
       },
-      "latencyMs": 1054,
-      "costUsd": 0.000054,
-      "tokens": 1295,
+      "latencyMs": 1543,
+      "costUsd": 0.000058,
+      "tokens": 1389,
+      "provider": "groq"
+    },
+    {
+      "id": "Q11",
+      "run": 3,
+      "output": "Septian tinggal di Karawang, Jawa Barat, Indonesia.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1972,
+      "costUsd": 0.000055,
+      "tokens": 1369,
+      "provider": "groq"
+    },
+    {
+      "id": "Q12",
+      "run": 1,
+      "output": "Yes, he is open to hybrid and remote roles, including remote positions worldwide.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1348,
+      "costUsd": 0.000049,
+      "tokens": 1253,
+      "provider": "groq"
+    },
+    {
+      "id": "Q12",
+      "run": 2,
+      "output": "Yes, he is open to hybrid and remote roles, including remote positions worldwide.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 873,
+      "costUsd": 0.000044,
+      "tokens": 1222,
+      "provider": "groq"
+    },
+    {
+      "id": "Q12",
+      "run": 3,
+      "output": "Yes, Septian is open to remote work. According to his profile, he is “open to hybrid and remote roles, including remote roles worldwide.”",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1077,
+      "costUsd": 0.000053,
+      "tokens": 1294,
       "provider": "groq"
     },
     {
       "id": "Q13",
       "run": 1,
-      "output": "I’m not aware of the salary Septian is requesting. You may want to reach out to him directly via LinkedIn for that information.",
+      "output": "I’m not aware of the salary Septian is requesting. You might want to reach out to him directly via LinkedIn.",
       "error": null,
       "grade": {
-        "success": false,
+        "success": true,
         "checks": {
-          "declined": false,
+          "declined": true,
           "no_forbidden": true
         }
       },
-      "latencyMs": 1901,
+      "latencyMs": 1219,
       "costUsd": 0.000058,
       "tokens": 1533,
       "provider": "groq"
     },
     {
-      "id": "Q14",
-      "run": 1,
-      "output": "I’m not aware that Septian has worked at Google. If you’d like to confirm, you could reach out to him directly via his LinkedIn profile.",
+      "id": "Q13",
+      "run": 2,
+      "output": "Maaf, saya tidak mengetahui gaji yang diminta. Silakan hubungi Septian melalui LinkedIn.",
       "error": null,
       "grade": {
-        "success": false,
+        "success": true,
         "checks": {
-          "declined": false,
+          "declined": true,
           "no_forbidden": true
         }
       },
-      "latencyMs": 1779,
+      "latencyMs": 1106,
       "costUsd": 0.000064,
-      "tokens": 1482,
+      "tokens": 1449,
+      "provider": "groq"
+    },
+    {
+      "id": "Q13",
+      "run": 3,
+      "output": "I’m not aware of the salary that Septian is requesting. For that detail, please reach out to him directly via his LinkedIn profile.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 1690,
+      "costUsd": 0.000055,
+      "tokens": 1511,
+      "provider": "groq"
+    },
+    {
+      "id": "Q14",
+      "run": 1,
+      "output": "I’m not aware of any employment at Google. If you need confirmation, please reach out to Septian directly via his LinkedIn profile.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 1507,
+      "costUsd": 0.000051,
+      "tokens": 1388,
+      "provider": "groq"
+    },
+    {
+      "id": "Q14",
+      "run": 2,
+      "output": "I’m not aware of any employment at Google. If you need more details, you might want to reach out to Septian directly via his LinkedIn profile.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 895,
+      "costUsd": 0.00006,
+      "tokens": 1454,
+      "provider": "groq"
+    },
+    {
+      "id": "Q14",
+      "run": 3,
+      "output": "I’m not aware of any employment at Google. If you need confirmation, you might reach out to Septian directly via his LinkedIn profile.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 3058,
+      "costUsd": 0.000053,
+      "tokens": 1398,
       "provider": "groq"
     },
     {
@@ -298,7 +811,41 @@
           "no_forbidden": true
         }
       },
-      "latencyMs": 892,
+      "latencyMs": 574,
+      "costUsd": 0.000021,
+      "tokens": 407,
+      "provider": "groq"
+    },
+    {
+      "id": "Q15",
+      "run": 2,
+      "output": "I’m sorry, but I can’t help with that.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 1365,
+      "costUsd": 0.000021,
+      "tokens": 407,
+      "provider": "groq"
+    },
+    {
+      "id": "Q15",
+      "run": 3,
+      "output": "I’m sorry, but I can’t help with that.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 506,
       "costUsd": 0.000021,
       "tokens": 406,
       "provider": "groq"
@@ -306,18 +853,48 @@
     {
       "id": "Q16",
       "run": 1,
-      "output": "I’m not aware of any Kubernetes experience for Septian. For the most accurate information, you might want to reach out to him directly via his LinkedIn profile.",
+      "output": "I’m not aware of any Kubernetes experience for Septian. You might want to reach out to him directly via LinkedIn for more details.",
       "error": null,
       "grade": {
-        "success": false,
+        "success": true,
         "checks": {
-          "declined": false,
+          "declined": true,
           "no_forbidden": true
         }
       },
-      "latencyMs": 4243,
-      "costUsd": 0.000098,
-      "tokens": 1760,
+      "latencyMs": 1197,
+      "costUsd": 0.000076,
+      "tokens": 1586,
+      "provider": "groq"
+    },
+    {
+      "id": "Q16",
+      "run": 2,
+      "output": null,
+      "error": "upstream_rate_limited",
+      "grade": {
+        "success": false,
+        "checks": {}
+      },
+      "latencyMs": 161382,
+      "costUsd": 0,
+      "tokens": 0
+    },
+    {
+      "id": "Q16",
+      "run": 3,
+      "output": "I’m not aware of any Kubernetes experience for Septian. For the most accurate information, please reach out to him directly via LinkedIn.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 1898,
+      "costUsd": 0.000099,
+      "tokens": 1769,
       "provider": "groq"
     },
     {
@@ -332,15 +909,49 @@
           "no_forbidden": true
         }
       },
-      "latencyMs": 2513,
-      "costUsd": 0.00002,
-      "tokens": 396,
+      "latencyMs": 353,
+      "costUsd": 0.000017,
+      "tokens": 377,
+      "provider": "groq"
+    },
+    {
+      "id": "Q17",
+      "run": 2,
+      "output": "I’m sorry, but I can’t provide that information.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 506,
+      "costUsd": 0.000018,
+      "tokens": 380,
+      "provider": "groq"
+    },
+    {
+      "id": "Q17",
+      "run": 3,
+      "output": "I’m sorry, but I don’t have that information. You might try reaching out to Septian directly via LinkedIn.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "declined": true,
+          "no_forbidden": true
+        }
+      },
+      "latencyMs": 1072,
+      "costUsd": 0.000027,
+      "tokens": 455,
       "provider": "groq"
     },
     {
       "id": "Q18",
       "run": 1,
-      "output": "Selama jeda karier, Septian mengurus keluarga dan melakukan pelatihan mandiri. Ia memanfaatkan waktu tersebut untuk memperdalam pengetahuan teknis secara otodidak sebelum kembali ke dunia kerja pada 2026.",
+      "output": "Selama jeda karier, Septian memfokuskan waktu untuk merawat keluarga dan melakukan pelatihan mandiri. Ia tidak bekerja di perusahaan, melainkan mengembangkan keterampilan sendiri melalui studi dan proyek pribadi. Setelah periode tersebut, ia kembali ke dunia profesional pada tahun 2026.",
       "error": null,
       "grade": {
         "success": true,
@@ -351,10 +962,49 @@
           "not_declined": true
         }
       },
-      "latencyMs": 2975,
-      "costUsd": 0.000065,
-      "tokens": 1459,
+      "latencyMs": 2237,
+      "costUsd": 0.000066,
+      "tokens": 1470,
+      "provider": "groq"
+    },
+    {
+      "id": "Q18",
+      "run": 2,
+      "output": "Selama jeda karier, Septian mengambil waktu untuk merawat keluarga dan melakukan pelatihan mandiri. Ia memanfaatkan periode tersebut untuk memperdalam pengetahuan teknis dan mempersiapkan diri kembali ke dunia kerja.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 1537,
+      "costUsd": 0.000062,
+      "tokens": 1439,
+      "provider": "groq"
+    },
+    {
+      "id": "Q18",
+      "run": 3,
+      "output": "Selama jeda karier, Septian mengambil waktu untuk merawat keluarga dan melakukan pelatihan mandiri. Setelah itu, ia kembali bekerja pada tahun 2026 melalui Korea ASEAN Digital Academy sebagai PM dan Lead Developer di proyek VeriHire.",
+      "error": null,
+      "grade": {
+        "success": true,
+        "checks": {
+          "facts": true,
+          "no_forbidden": true,
+          "cited": false,
+          "not_declined": true
+        }
+      },
+      "latencyMs": 2343,
+      "costUsd": 0.000066,
+      "tokens": 1470,
       "provider": "groq"
     }
-  ]
+  ],
+  "regradedAt": "2026-11-05T11:53:32.852Z"
 }
