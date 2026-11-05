@@ -1,3 +1,4 @@
+name: simpang # keep the same volume (simpang_simpang-db) wherever this folder lives
 services:
   db:
     # Postgres 17 with the pgvector extension preinstalled (needed for RAG in milestone 3).
